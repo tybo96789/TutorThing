@@ -225,12 +225,12 @@ public class TutorThing {
                 else{
                 
                     INSTANCE.list.add(new Session(System.currentTimeMillis(),
-                        INSTANCE.fName.getText(),
-                        INSTANCE.lName.getText(),
-                        INSTANCE.iD.getText(),
-                        INSTANCE.course.getText(),
-                        INSTANCE.instructor.getText(),
-                        INSTANCE.tutor.getText()));
+                        INSTANCE.fName.getText().trim(),
+                        INSTANCE.lName.getText().trim(),
+                        INSTANCE.iD.getText().trim(),
+                        INSTANCE.course.getText().trim(),
+                        INSTANCE.instructor.getText().trim(),
+                        INSTANCE.tutor.getText().trim()));
                     
                     INSTANCE.fName.setText("");
                     INSTANCE.lName.setText("");
