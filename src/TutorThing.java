@@ -52,6 +52,12 @@ public class TutorThing {
         private final int SCROLL_PANE_OFFSET_WIDTH = 0, SCROLL_PANE_OFFSET_HEIGHT = 0;
         private JPanel buttonPanel = new JPanel();
         
+        //JLabels
+        
+        //JTextFields
+        private JTextField fName = new JTextField();
+        private JTextField lName = new JTextField();
+        
         // Buttons
         private final JButton ADD = new JButton("ADD");
         private final JButton REMOVE = new JButton("REMOVE");
@@ -133,8 +139,8 @@ public class TutorThing {
             
             //Scroll Pane
             this.listPanel = new JScrollPane(LIST);
-            this.getContentPane().add(this.listPanel, BorderLayout.CENTER);
-
+            //this.getContentPane().add(this.listPanel, BorderLayout.CENTER);
+            this.add(this.listPanel, BorderLayout.CENTER);
             this.listPanel.setAutoscrolls(true);
             //this.listPanel.setViewportView(this.textArea);
             this.listPanel.setBounds(0, 0, this.getWidth()-SCROLL_PANE_OFFSET_WIDTH, this.getHeight()-SCROLL_PANE_OFFSET_HEIGHT);
@@ -143,7 +149,12 @@ public class TutorThing {
             this.listPanel.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
             
             //listPanel.add(LIST, BorderLayout.CENTER);
+            
+            //Button Panel
             buttonPanel.add(ADD, BorderLayout.EAST);
+            this.fName.setColumns(50);
+            this.buttonPanel.add(this.fName, BorderLayout.EAST);
+            
         }
 
 
