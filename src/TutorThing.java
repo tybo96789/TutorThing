@@ -198,10 +198,28 @@ public class TutorThing {
                         INSTANCE.course.getText().isEmpty() ||
                         INSTANCE.instructor.getText().isEmpty() ||
                         INSTANCE.tutor.getText().isEmpty() 
-                        )
+                  )
                 {
                     JOptionPane.showMessageDialog(null, "A Field is Missing Information", "Error", JOptionPane.ERROR_MESSAGE);
                 }
+                else{
+                
+                    INSTANCE.list.add(new Session(System.currentTimeMillis(),
+                        INSTANCE.fName.getText(),
+                        INSTANCE.lName.getText(),
+                        INSTANCE.iD.getText(),
+                        INSTANCE.course.getText(),
+                        INSTANCE.instructor.getText(),
+                        INSTANCE.tutor.getText()));
+                    
+                    INSTANCE.fName.setText("");
+                    INSTANCE.lName.setText("");
+                    INSTANCE.iD.setText("");
+                    INSTANCE.course.setText("");
+                    INSTANCE.instructor.setText("");
+                    INSTANCE.tutor.setText("");
+                    /*
+                    
                 System.out.println("ADD BUTTON - BEGINNING ACTION");
                 System.out.println("To save time and trouble, just enter all the info at once delimited by a space..."
                         + "format = (fname lname ID course instructor tutor)");
@@ -220,6 +238,8 @@ public class TutorThing {
                 //}
                 LIST = new JList(T_LIST);
                 System.out.println("ADD BUTTON - ACTION FINISHED");
+                    */
+                }
             } 
 
                       
