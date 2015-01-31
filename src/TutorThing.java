@@ -53,6 +53,8 @@ public class TutorThing {
         private JPanel buttonPanel = new JPanel();
         
         //JLabels
+        private JLabel fLabel = new JLabel("First Name");
+        private JLabel lLabel = new JLabel("Last Name");
         
         //JTextFields
         private JTextField fName = new JTextField();
@@ -151,9 +153,15 @@ public class TutorThing {
             //listPanel.add(LIST, BorderLayout.CENTER);
             
             //Button Panel
+            this.buttonPanel.setPreferredSize(new Dimension(this.getWidth()-500, this.getHeight()));
+            this.buttonPanel.setBounds(0, 0, this.getWidth()-500, this.getHeight());
             buttonPanel.add(ADD, BorderLayout.EAST);
+            this.buttonPanel.add(this.fLabel);
             this.fName.setColumns(50);
             this.buttonPanel.add(this.fName, BorderLayout.EAST);
+            this.buttonPanel.add(this.lLabel);
+            this.lName.setColumns(50);
+            this.buttonPanel.add(this.lName, BorderLayout.CENTER);
             
         }
 
