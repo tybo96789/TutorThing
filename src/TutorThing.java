@@ -13,6 +13,8 @@ import java.util.Scanner;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.PrintStream;
 // import java.*; // you know you want to p.s. i think i got rid of a few imports by accident
 
 /**
@@ -46,7 +48,8 @@ public class TutorThing {
         private Container buttonContainer = new Container();
         private JPanel panel = new JPanel();
         
-        private JPanel listPanel = new JPanel();
+        private JScrollPane listPanel;
+        private final int SCROLL_PANE_OFFSET_WIDTH = 0, SCROLL_PANE_OFFSET_HEIGHT = 0;
         private JPanel buttonPanel = new JPanel();
         
         // Buttons
@@ -89,7 +92,7 @@ public class TutorThing {
             });
             
             buildPanels();
-            this.add(listPanel, BorderLayout.CENTER);
+            //this.add(listPanel, BorderLayout.CENTER);
             this.add(buttonPanel, BorderLayout.EAST);
 
             //Used to center the Window to the center of the screen no matter what computer you are using
@@ -107,7 +110,6 @@ public class TutorThing {
              }
              this.add(this.panel);
              */
-
             //make it visable to the user
             this.setVisible(true);
             
@@ -128,20 +130,32 @@ public class TutorThing {
         }
 
         private void buildPanels() {
-            listPanel.add(LIST, BorderLayout.CENTER);
+            
+            //Scroll Pane
+            this.listPanel = new JScrollPane(LIST);
+            this.getContentPane().add(this.listPanel, BorderLayout.CENTER);
+
+            this.listPanel.setAutoscrolls(true);
+            //this.listPanel.setViewportView(this.textArea);
+            this.listPanel.setBounds(0, 0, this.getWidth()-SCROLL_PANE_OFFSET_WIDTH, this.getHeight()-SCROLL_PANE_OFFSET_HEIGHT);
+            this.listPanel.setPreferredSize(new Dimension(this.getWidth()-SCROLL_PANE_OFFSET_WIDTH, this.getHeight()-SCROLL_PANE_OFFSET_HEIGHT));
+            this.listPanel.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+            this.listPanel.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+            
+            //listPanel.add(LIST, BorderLayout.CENTER);
             buttonPanel.add(ADD, BorderLayout.EAST);
         }
 
 
 
         private void makeContainers() {
-           this.addActionListeners();
+           //this.addActionListeners();
 
             //Container listContainer = new Container();
             listContainer.add(LIST, BorderLayout.CENTER);
             buttonContainer.add(ADD, BorderLayout.EAST);
-            containers.add(listContainer);
-            containers.add(buttonContainer);
+            //containers.add(listContainer);
+            //containers.add(buttonContainer);
         }
         
         private class AddButtonListener implements ActionListener {
