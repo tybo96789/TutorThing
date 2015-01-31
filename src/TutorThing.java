@@ -49,7 +49,7 @@ public class TutorThing {
         private JPanel panel = new JPanel();
         
         private JScrollPane listPanel;
-        private final int SCROLL_PANE_OFFSET_WIDTH = 0, SCROLL_PANE_OFFSET_HEIGHT = 0;
+        private final int SCROLL_PANE_OFFSET_WIDTH = 300, SCROLL_PANE_OFFSET_HEIGHT = 0;
         private JPanel buttonPanel = new JPanel();
         
         //JLabels
@@ -57,6 +57,7 @@ public class TutorThing {
         private JLabel lLabel = new JLabel("Last Name");
         
         //JTextFields
+        private final int COL_WIDTH = 30;
         private JTextField fName = new JTextField();
         private JTextField lName = new JTextField();
         
@@ -153,16 +154,18 @@ public class TutorThing {
             //listPanel.add(LIST, BorderLayout.CENTER);
             
             //Button Panel
-            this.buttonPanel.setPreferredSize(new Dimension(this.getWidth()-500, this.getHeight()));
-            this.buttonPanel.setBounds(0, 0, this.getWidth()-500, this.getHeight());
-            buttonPanel.add(ADD, BorderLayout.EAST);
-            this.buttonPanel.add(this.fLabel);
-            this.fName.setColumns(50);
-            this.buttonPanel.add(this.fName, BorderLayout.EAST);
-            this.buttonPanel.add(this.lLabel);
-            this.lName.setColumns(50);
-            this.buttonPanel.add(this.lName, BorderLayout.CENTER);
+            this.buttonPanel.setPreferredSize(new Dimension(this.getWidth()-700, this.getHeight()));
+            this.buttonPanel.setBounds(0, 0, this.getWidth()-700, this.getHeight());
             
+            this.buttonPanel.add(this.fLabel,BorderLayout.WEST);
+            this.fName.setColumns(COL_WIDTH);
+            this.buttonPanel.add(this.fName, BorderLayout.EAST);
+            
+            this.buttonPanel.add(this.lLabel,BorderLayout.WEST);
+            this.lName.setColumns(COL_WIDTH);
+            this.buttonPanel.add(this.lName, BorderLayout.EAST);
+            this.ADD.addActionListener(new AddButtonListener());
+            buttonPanel.add(ADD, BorderLayout.EAST);
         }
 
 
@@ -181,6 +184,12 @@ public class TutorThing {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                if(INSTANCE.fName.getText().isEmpty() ||
+                        INSTANCE.lName.getText().isEmpty() 
+                        )
+                {
+                    
+                }
                 System.out.println("ADD BUTTON - BEGINNING ACTION");
                 System.out.println("To save time and trouble, just enter all the info at once delimited by a space..."
                         + "format = (fname lname ID course instructor tutor)");
