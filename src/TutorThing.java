@@ -55,7 +55,7 @@ public class TutorThing {
         //JLabels
         private JLabel fLabel = new JLabel("First Name");
         private JLabel lLabel = new JLabel("Last Name");
-        private JLabel idLable = new JLabel("ID");
+        private JLabel idLabel = new JLabel("ID");
         private JLabel courseLabel = new JLabel("Course");
         private JLabel instructorLabel = new JLabel("Instructor");
         private JLabel tutorLabel = new JLabel("Tutor");
@@ -172,6 +172,24 @@ public class TutorThing {
             this.buttonPanel.add(this.lLabel,BorderLayout.WEST);
             this.lName.setColumns(COL_WIDTH);
             this.buttonPanel.add(this.lName, BorderLayout.EAST);
+            
+            this.buttonPanel.add(this.idLabel,BorderLayout.WEST);
+            this.iD.setColumns(COL_WIDTH);
+            this.buttonPanel.add(this.iD, BorderLayout.EAST);
+            
+            this.buttonPanel.add(this.courseLabel,BorderLayout.WEST);
+            this.course.setColumns(COL_WIDTH);
+            this.buttonPanel.add(this.course, BorderLayout.EAST);
+            
+            this.buttonPanel.add(this.instructorLabel,BorderLayout.WEST);
+            this.instructor.setColumns(COL_WIDTH);
+            this.buttonPanel.add(this.instructor, BorderLayout.EAST);
+            
+            this.buttonPanel.add(this.tutorLabel,BorderLayout.WEST);
+            this.tutor.setColumns(COL_WIDTH);
+            this.buttonPanel.add(this.tutor, BorderLayout.EAST);
+            
+            
             this.ADD.addActionListener(new AddButtonListener());
             buttonPanel.add(ADD, BorderLayout.EAST);
         }
