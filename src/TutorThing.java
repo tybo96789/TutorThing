@@ -38,13 +38,14 @@ class Session {
     }
 
     public long calcTime() {
-        /*
-         Long e = System.nanoTime();
-         System.out.println("end = "+ e );
-         System.out.println("a = " + a);
-         return ((e - start))/a;
-         */
         return (System.nanoTime() - start) / ((long) Math.pow(10, 9));
     }
+
+    @Override
+    public String toString() {
+        return this.lName + "," + this.fName + "," + this.iD + "," + this.course + "," + this.instructor + "," + this.tutor + "," + this.start + "," + this.end;
+    }
+    
+    
 
 }
