@@ -55,11 +55,19 @@ public class TutorThing {
         //JLabels
         private JLabel fLabel = new JLabel("First Name");
         private JLabel lLabel = new JLabel("Last Name");
+        private JLabel idLable = new JLabel("ID");
+        private JLabel courseLabel = new JLabel("Course");
+        private JLabel instructorLabel = new JLabel("Instructor");
+        private JLabel tutorLabel = new JLabel("Tutor");
         
         //JTextFields
         private final int COL_WIDTH = 30;
         private JTextField fName = new JTextField();
         private JTextField lName = new JTextField();
+        private JTextField iD = new JTextField();
+        private JTextField course = new JTextField();
+        private JTextField instructor = new JTextField();
+        private JTextField tutor = new JTextField();
         
         // Buttons
         private final JButton ADD = new JButton("ADD");
@@ -185,10 +193,14 @@ public class TutorThing {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(INSTANCE.fName.getText().isEmpty() ||
-                        INSTANCE.lName.getText().isEmpty() 
+                        INSTANCE.lName.getText().isEmpty() ||
+                        INSTANCE.iD.getText().isEmpty() ||
+                        INSTANCE.course.getText().isEmpty() ||
+                        INSTANCE.instructor.getText().isEmpty() ||
+                        INSTANCE.tutor.getText().isEmpty() 
                         )
                 {
-                    
+                    JOptionPane.showMessageDialog(null, "A Field is Missing Information", "Error", JOptionPane.ERROR_MESSAGE);
                 }
                 System.out.println("ADD BUTTON - BEGINNING ACTION");
                 System.out.println("To save time and trouble, just enter all the info at once delimited by a space..."
