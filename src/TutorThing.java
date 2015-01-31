@@ -111,7 +111,7 @@ public class TutorThing {
         /**
          * Listener to call save data when the user hits save
          */
-        private class SaveDocumentListener implements ActionListener
+        private class ExportListener implements ActionListener
         {
 
             @Override
@@ -195,7 +195,7 @@ public class TutorThing {
         /**
          * This listener will call the saveDialog method when the user hits the save as button
          */
-        private class SaveAsDocumentListener implements ActionListener
+        private class ExportAsDocumentListener implements ActionListener
         {
 
             @Override
