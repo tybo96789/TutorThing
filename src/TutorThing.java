@@ -4,6 +4,8 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import javax.swing.JFrame;
 import static javax.swing.JFrame.EXIT_ON_CLOSE;
@@ -29,16 +31,21 @@ public class TutorThing {
         //Frame Stuff
         private final String TITLE = "Tutoring Management Program";
         private final int INITAL_WIDTH = 1200, INITAL_HEIGHT = 800;
+        private final TutorManagement INSTANCE = this;
         
         //Panel Stuff
         private ArrayList<Container> containers = new ArrayList<Container>();
         private JPanel panel = new JPanel();
         
-        
         //Application Stuff
         private ArrayList<Session> list = new ArrayList<Session>();
+        
         //Saving stuff
         private final String FILE_EXTENSION = ".CSV";
+        private int startingSize= 0;
+        private File file;
+        private FileOutputStream out;
+        private boolean isModifed = false;
 
         public TutorManagement() {
             
@@ -70,6 +77,17 @@ public class TutorThing {
 
         private void makeContainers() {
             //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+        
+        private void detectChanges()
+        {
+            if(this.startingSize != this.list.size())
+            {
+                this.isModifed = true;
+                this.startingSize = this.list.size();
+            }
+            else
+                this.isModifed = false;
         }
     }
 
