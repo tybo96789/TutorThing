@@ -50,7 +50,9 @@ public class TutorThing {
         
         private JScrollPane listPanel;
         private final int SCROLL_PANE_OFFSET_WIDTH = 0, SCROLL_PANE_OFFSET_HEIGHT = 0;
+        
         private JPanel buttonPanel = new JPanel();
+        private final int BUTTON_PANEL_OFFSET_WIDTH = 800;
         
         //JLabels
         private JLabel fLabel = new JLabel("First Name");
@@ -162,8 +164,8 @@ public class TutorThing {
             //listPanel.add(LIST, BorderLayout.CENTER);
             
             //Button Panel
-            this.buttonPanel.setPreferredSize(new Dimension(this.getWidth()-800, this.getHeight()));
-            this.buttonPanel.setBounds(0, 0, this.getWidth()-800, this.getHeight());
+            this.buttonPanel.setPreferredSize(new Dimension(this.getWidth()-BUTTON_PANEL_OFFSET_WIDTH, this.getHeight()));
+            this.buttonPanel.setBounds(0, 0, this.getWidth()-BUTTON_PANEL_OFFSET_WIDTH, this.getHeight());
             
             this.buttonPanel.add(this.fLabel,BorderLayout.WEST);
             this.fName.setColumns(COL_WIDTH);
