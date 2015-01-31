@@ -34,6 +34,9 @@ public class TutorThing {
         private ArrayList<Container> containers = new ArrayList<Container>();
         private JPanel panel = new JPanel();
         
+        
+        //Application Stuff
+        private ArrayList<Session> list = new ArrayList<Session>();
         //Saving stuff
         private final String FILE_EXTENSION = ".CSV";
 
