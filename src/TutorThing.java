@@ -1,3 +1,6 @@
+
+import javax.swing.JFrame;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -6,7 +9,7 @@
 
 /**
  *
- * @author Tyler
+ * @author Tyler Atiburcio, Lawrence Ruffin
  */
 public class TutorThing {
 
@@ -14,10 +17,14 @@ public class TutorThing {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Session s = new Session(System.nanoTime());
+        new TutorManagement();
+    }
 
-        System.out.println("start = " + s.start + "\ndifference = " + s.calcTime());
+    private static class TutorManagement  extends JFrame{
 
+        public TutorManagement() {
+            
+        }
     }
 
 }
