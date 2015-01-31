@@ -6,9 +6,11 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import javax.swing.JFrame;
 import static javax.swing.JFrame.EXIT_ON_CLOSE;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /**
@@ -44,7 +46,7 @@ public class TutorThing {
         private final String FILE_EXTENSION = ".CSV";
         private int startingSize= 0;
         private File file;
-        private FileOutputStream out;
+        private PrintStream out;
         private boolean isModifed = false;
 
         public TutorManagement() {
@@ -88,6 +90,19 @@ public class TutorThing {
             }
             else
                 this.isModifed = false;
+        }
+        
+        private void saveData()
+        {
+            try{
+                out = new PrintStream(this.file);
+                for(Session s : this.list) out.println(s.toString());
+                out.flush();
+                out.close();
+            }catch(Exception ex)
+            {
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "Error Opening File", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
