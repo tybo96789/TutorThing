@@ -2,12 +2,15 @@
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import static javax.swing.JFrame.EXIT_ON_CLOSE;
 import javax.swing.JOptionPane;
@@ -104,9 +107,62 @@ public class TutorThing {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "Error Opening File", JOptionPane.ERROR_MESSAGE);
             }
         }
-    }
+        
+        /**
+         * Listener to call save data when the user hits save
+         */
+        private class SaveDocumentListener implements ActionListener
+        {
 
-    private static class CloseWindowListener implements WindowListener {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(INSTANCE.file == null) INSTANCE.saveDialog();
+                else
+                {
+                    INSTANCE.saveData();
+                }
+            }
+            
+        }
+        /**
+         * If the user has not saved the new file before this method will open up a file explorer to ask the user
+         * where to save the file
+         */
+        private void saveDialog()
+        {
+            JFileChooser chooser = new JFileChooser();
+            PrintStream out  = null;
+            chooser.showSaveDialog(null);
+            this.file = chooser.getSelectedFile();
+            
+            try{
+                
+                if(file != null){
+                    this.saveData();
+                    this.isModifed = false;
+                }
+                
+            }catch(Exception e)
+            {                    
+                JOptionPane.showMessageDialog(null, e.getMessage(), "Error Saving File", JOptionPane.ERROR_MESSAGE);
+ 
+            }
+            
+        }
+        /**
+         * This listener will call the saveDialog method when the user hits the save as button
+         */
+        private class SaveAsDocumentListener implements ActionListener
+        {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                INSTANCE.saveDialog();
+            }
+            
+        }
+        
+         private class CloseWindowListener implements WindowListener {
 
         public CloseWindowListener() {
         }
@@ -148,6 +204,9 @@ public class TutorThing {
     }
 
 }
+    }
+
+   
 
 class Session {
 
