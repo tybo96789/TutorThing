@@ -131,7 +131,6 @@ public class TutorThing {
         private void saveDialog()
         {
             JFileChooser chooser = new JFileChooser();
-            PrintStream out  = null;
             chooser.showSaveDialog(null);
             this.file = chooser.getSelectedFile();
             
@@ -149,6 +148,50 @@ public class TutorThing {
             }
             
         }
+        
+        /**
+         * The ending action method will check if there is any unsaved changes to the document
+         * and if there is unsaved changes then ask the user what to do
+         */
+        private void endingAction()
+        {
+            this.detectChanges();
+            if(this.isModifed)
+            {
+                //System.out.println(JOptionPane.showConfirmDialog(null, "Do you want to save unsaved changes?", "Hey User!", JOptionPane.YES_NO_CANCEL_OPTION));
+                switch(JOptionPane.showConfirmDialog(null, "Do you want to save current data?", "Hey User!", JOptionPane.YES_NO_CANCEL_OPTION))
+                {
+                    case 0:
+                    {
+                        if(this.file != null)
+                        {
+                            INSTANCE.saveData();
+                            INSTANCE.dispose();
+                            System.exit(0);
+                            break;
+                        }
+                    }
+                    
+                    case 1:
+                    {
+                        INSTANCE.dispose();
+                        System.exit(0);
+                        break;
+                    }
+                }
+                        
+                
+                //cancel op 2
+                //no op 1
+                //yes op 0
+            }
+            else
+            {
+                INSTANCE.dispose();
+                System.exit(0);
+            }
+        }
+        
         /**
          * This listener will call the saveDialog method when the user hits the save as button
          */
@@ -162,7 +205,20 @@ public class TutorThing {
             
         }
         
-         private class CloseWindowListener implements WindowListener {
+        /**
+         * This action listener will check call the closing of the program
+         */
+        private class ExitListener implements ActionListener
+        {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                INSTANCE.endingAction();
+            }
+            
+        }
+        
+        private class CloseWindowListener implements WindowListener {
 
         public CloseWindowListener() {
         }
@@ -174,7 +230,7 @@ public class TutorThing {
 
         @Override
         public void windowClosing(WindowEvent we) {
-            //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            INSTANCE.endingAction();
         }
 
         @Override
