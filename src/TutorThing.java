@@ -7,6 +7,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.PrintStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
 // import java.*; // you know you want to p.s. i think i got rid of a few imports by accident
@@ -54,6 +56,7 @@ public class TutorThing {
         private JLabel courseLabel = new JLabel("Course");
         private JLabel instructorLabel = new JLabel("Instructor");
         private JLabel tutorLabel = new JLabel("Tutor");
+        private JLabel startTime = new JLabel("Start Time");
 
         //JTextFields
         private final int COL_WIDTH = 30;
@@ -75,7 +78,7 @@ public class TutorThing {
 
         // JList (testing)
         private JList LIST;// = new JList();
-        String[] test = {"First Name", "Last Name", "ID", "Course", "Instructor", "Tutor"};
+        String[] test = {"First Name", "Last Name", "ID", "Course", "Instructor", "Tutor", "Start Time"};
 
         private final static DefaultListModel<Session> T_LIST = new DefaultListModel();
 
@@ -250,18 +253,28 @@ public class TutorThing {
                         || INSTANCE.instructor.getText().isEmpty()
                         || INSTANCE.tutor.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(null, "A Field is Missing Information", "Error", JOptionPane.ERROR_MESSAGE);
-                } else {
+                } 
+                else if(!INSTANCE.iD.getText().matches("@[0-9]{8}") && !INSTANCE.iD.getText().matches("[0-9]{8}")) JOptionPane.showMessageDialog(null, "ID is Invalid!", "Error", JOptionPane.ERROR_MESSAGE);
+                else {
+
+                        
+                   
                     Vector<String> fieldList = new Vector();
                     
                     fieldList.add(INSTANCE.fName.getText().trim());
                     fieldList.add(INSTANCE.lName.getText().trim());
-                    fieldList.add(INSTANCE.iD.getText().trim());
+                    if(INSTANCE.iD.getText().matches("[0-9]{8}"))
+                        fieldList.add("@" + INSTANCE.iD.getText().trim());
+                    else
+                        fieldList.add(INSTANCE.iD.getText().trim());
                     fieldList.add(INSTANCE.course.getText().trim());
                     fieldList.add(INSTANCE.instructor.getText().trim());
                     fieldList.add(INSTANCE.tutor.getText().trim());
+                    DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+                    fieldList.add(dateFormat.format(new Date()));
                     /*
-                     * replaced the list - uncomment this part if you want to see what
-                     * the list version of this looked like.
+                    // * replaced the list - uncomment this part if you want to see what
+                    // * the list version of this looked like.
                      INSTANCE.sessionListModel.addElement(new Session(System.currentTimeMillis(),
                      INSTANCE.fName.getText().trim(),
                      INSTANCE.lName.getText().trim(),
@@ -328,7 +341,11 @@ public class TutorThing {
                 throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         } // end RemoveButtonListener  
-
+        
+        
+        /**
+         * Broken..
+         */
         private void detectChanges() {
             if (this.startingSize != this.sessionListModel.size()) {
                 this.isModifed = true;
