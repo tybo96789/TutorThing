@@ -34,7 +34,7 @@ public class TutorThing {
         
         //Frame Stuff
         private final String TITLE = "Tutoring Management Program";
-        private final int INITAL_WIDTH = 700, INITAL_HEIGHT = 700;
+        private final int INITAL_WIDTH = 1200, INITAL_HEIGHT = 800;
         
         //Panel Stuff
         private ArrayList<Container> containers = new ArrayList<Container>();
@@ -49,7 +49,7 @@ public class TutorThing {
             this.setTitle(TITLE);
             this.setSize(INITAL_WIDTH, INITAL_HEIGHT);
             this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-            this.addWindowListener(new CloseWindowListener());
+            //this.addWindowListener(new CloseWindowListener());
 
             //Used to center the Window to the center of the screen no matter what computer you are using
             Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
@@ -72,7 +72,7 @@ public class TutorThing {
         }
 
         private void makeContainers() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
     }
 
