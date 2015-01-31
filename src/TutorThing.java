@@ -1,20 +1,19 @@
 
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
+//import java.awt.Container;
+//import java.awt.Dimension;
+//import java.awt.Toolkit;
+//import java.awt.event.WindowEvent;
+//import java.awt.event.WindowListener;
 import java.util.ArrayList;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import static javax.swing.JFrame.EXIT_ON_CLOSE;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+import java.util.Date;
+//import javax.swing.JFrame;
+//import static javax.swing.JFrame.EXIT_ON_CLOSE;
+//import javax.swing.JPanel;
+import java.util.Scanner;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+// import java.*; // you know you want to p.s. i think i got rid of a few imports by accident
 
 /**
  *
@@ -23,6 +22,9 @@ import javax.swing.JPanel;
  */
 public class TutorThing {
 
+    // Scanner here for testing (will be removed)
+    static Scanner s = new Scanner(System.in);
+    
     /**
      * @param args the command line arguments
      */
@@ -38,9 +40,24 @@ public class TutorThing {
         private final int INITAL_WIDTH = 1200, INITAL_HEIGHT = 800;
         private final TutorManagement INSTANCE = this;
         
-        //Panel Stuff
+        // Panel Stuff
         private ArrayList<Container> containers = new ArrayList<Container>();
+        private Container listContainer = new Container();
+        private Container buttonContainer = new Container();
         private JPanel panel = new JPanel();
+        
+        private JPanel listPanel = new JPanel();
+        private JPanel buttonPanel = new JPanel();
+        
+        // Buttons
+        private final JButton ADD = new JButton("ADD");
+        private final JButton REMOVE = new JButton("REMOVE");
+
+        // JMenu (to be added)
+        // JList (testing)
+        private static JList LIST;// = new JList();
+        String[] test = {"t1", "t2", "t3"};
+        private final static DefaultListModel<Session> T_LIST = new DefaultListModel();
         
         //Application Stuff
         private ArrayList<Session> list = new ArrayList<Session>();
@@ -60,6 +77,21 @@ public class TutorThing {
             this.setDefaultCloseOperation(EXIT_ON_CLOSE);
             this.addWindowListener(new CloseWindowListener());
 
+            // Layout
+            this.setLayout(new BorderLayout());
+            
+            // builds list
+            this.buildList();
+            
+            // add containers
+            this.containers.stream().forEach((c) -> {
+                this.add(c);
+            });
+            
+            buildPanels();
+            this.add(listPanel, BorderLayout.CENTER);
+            this.add(buttonPanel, BorderLayout.EAST);
+
             //Used to center the Window to the center of the screen no matter what computer you are using
             Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
             this.setMaximizedBounds(null);
@@ -68,21 +100,85 @@ public class TutorThing {
             //To adjust the size of the text area when the frame size is adjusted
             //this.addComponentListener(new JFrameComponentAdaptor());            
 
-            //Container stuff
-            this.makeContainers();
-            for (Container c : this.containers) {
-                this.panel.add(c);
-            }
-            this.add(this.panel);
+            /*
+             //Container stuff
+             for (Container c : this.containers) {
+             this.panel.add(c);
+             }
+             this.add(this.panel);
+             */
 
             //make it visable to the user
             this.setVisible(true);
             
         }
 
-        private void makeContainers() {
-            //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        private void buildList() {
+            //LIST.a
+            //LIST = new JList(test);
+            //LIST.add("hello");
+//            T_LIST.addElement("TEST");
+            //T_LIST.
+            LIST = new JList(T_LIST);
+            LIST.setVisibleRowCount(10);
         }
+
+        private void buildButtonPanel() {
+            buttonPanel.add(ADD, BorderLayout.EAST);
+        }
+
+        private void buildPanels() {
+            listPanel.add(LIST, BorderLayout.CENTER);
+            buttonPanel.add(ADD, BorderLayout.EAST);
+        }
+
+
+
+        private void makeContainers() {
+           this.addActionListeners();
+
+            //Container listContainer = new Container();
+            listContainer.add(LIST, BorderLayout.CENTER);
+            buttonContainer.add(ADD, BorderLayout.EAST);
+            containers.add(listContainer);
+            containers.add(buttonContainer);
+        }
+        
+        private class AddButtonListener implements ActionListener {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("ADD BUTTON - BEGINNING ACTION");
+                System.out.println("To save time and trouble, just enter all the info at once delimited by a space..."
+                        + "format = (fname lname ID course instructor tutor)");
+                //String line = s.nextLine();
+                String firstName = s.next();
+                String lastName = s.next();
+                String ID = s.next();
+                String course = s.next();
+                String instructor = s.next();
+                String tutor = s.next();
+
+                //for (int i = 0; i < 10; i++) {
+                System.out.println("adding to list...");
+                T_LIST.addElement(new Session(System.currentTimeMillis(), firstName, lastName, ID, course, instructor, tutor));
+                System.out.println("successfully added...");
+                //}
+                LIST = new JList(T_LIST);
+                System.out.println("ADD BUTTON - ACTION FINISHED");
+            } 
+
+                      
+        }// end AddButtonListener
+        
+        private class RemoveButtonListener implements ActionListener {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                }
+            } // end RemoveButtonListener  
+        
         
         private void detectChanges()
         {
