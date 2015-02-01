@@ -153,16 +153,17 @@ public class TutorThing {
             
             //Scroll Pane
             this.listPane = new JScrollPane(sessionTable);
-            //this.getContentPane().add(this.listPanel, BorderLayout.CENTER);
             this.add(this.listPane, BorderLayout.CENTER);
             this.listPane.setAutoscrolls(true);
-            //this.listPanel.setViewportView(this.textArea);
             this.listPane.setBounds(0, 0, this.getWidth() - SCROLL_PANE_OFFSET_WIDTH, this.getHeight() - SCROLL_PANE_OFFSET_HEIGHT);
             this.listPane.setPreferredSize(new Dimension(this.getWidth() - SCROLL_PANE_OFFSET_WIDTH, this.getHeight() - SCROLL_PANE_OFFSET_HEIGHT));
             this.listPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
             this.listPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
         }
-
+        
+        /**
+         * @deprecated 
+         */
         private void buildList() {
             //LIST.a
             //LIST = new JList(test);
@@ -172,11 +173,16 @@ public class TutorThing {
             LIST = new JList(T_LIST);
             LIST.setVisibleRowCount(10);
         }
-
+        
+        
+        
         private void buildButtonPanel() {
             buttonPanel.add(ADD, BorderLayout.EAST);
         }
-
+        
+        /**
+         * @deprecated 
+         */
         private void buildListPanel() {
             //test1.add( new Session(System.currentTimeMillis(), "t1", "t1", "t1", "t1", "t1", "t1"));
             LIST = new JList(sessionListModel);
@@ -287,7 +293,11 @@ public class TutorThing {
             this.menu.add(this.exitItem);
             
         }
-
+        
+        
+        /**
+         * @deprecated 
+         */
         private void makeContainers() {
            //this.addActionListeners();
 
@@ -364,19 +374,8 @@ public class TutorThing {
                     INSTANCE.course.setText("");
                     INSTANCE.instructor.setText("");
                     INSTANCE.tutor.setText("");
-                    /*
                     
-                     System.out.println("ADD BUTTON - BEGINNING ACTION");
-                     System.out.println("To save time and trouble, just enter all the info at once delimited by a space..."
-                     + "format = (fname lname ID course instructor tutor)");
-                     //String line = s.nextLine();
-                     String firstName = s.next();
-                     String lastName = s.next();
-                     String ID = s.next();
-                     String course = s.next();
-                     String instructor = s.next();
-                     String tutor = s.next();
-
+                    /*
                      //for (int i = 0; i < 10; i++) {
                      System.out.println("adding to list...");
                      T_LIST.addElement(new Session(System.currentTimeMillis(), firstName, lastName, ID, course, instructor, tutor));
@@ -399,9 +398,6 @@ public class TutorThing {
         } // end RemoveButtonListener  
         
         
-        /**
-         * Broken..
-         */
         private void detectChanges() {
             if (this.startingSize != this.sessionListModel.size()) {
                 this.isModifed = true;
