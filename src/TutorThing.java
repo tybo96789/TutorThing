@@ -221,7 +221,7 @@ public class TutorThing {
             //Button Panel
             this.buttonPanel.setPreferredSize(new Dimension(this.getWidth() - BUTTON_PANEL_OFFSET_WIDTH, this.getHeight()));
             this.buttonPanel.setBounds(0, 0, this.getWidth() - BUTTON_PANEL_OFFSET_WIDTH, this.getHeight());
-            this.buttonPanel.setLayout(new GridLayout(25,1,30,10));
+            this.buttonPanel.setLayout(new GridLayout(10,2,30,10));
 
             this.buttonPanel.add(this.fLabel);
             this.fName.setColumns(COL_WIDTH);
