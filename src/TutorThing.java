@@ -88,7 +88,7 @@ public class TutorThing {
 
         // JList (testing)
         private JList LIST;// = new JList();
-        String[] test = {"First Name", "Last Name", "ID", "Course", "Instructor", "Tutor", "Start Time"};
+        final String[] test = {"First Name", "Last Name", "ID", "Course", "Instructor", "Tutor", "Start Time"};
 
         private final static DefaultListModel<Session> T_LIST = new DefaultListModel();
 
