@@ -42,3 +42,6 @@ Network Trash Folder
 Temporary Items
 .apdisk
 /build/
+
+#STuff i need to block
+.properties
