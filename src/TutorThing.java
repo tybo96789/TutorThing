@@ -10,6 +10,7 @@ import java.io.PrintStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Vector;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableModel;
 // import java.*; // you know you want to p.s. i think i got rid of a few imports by accident
 
@@ -412,6 +413,8 @@ public class TutorThing {
 
         private void saveData() {
             try {
+                if(!this.file.getName().toUpperCase().endsWith(INSTANCE.FILE_EXTENSION))
+                    this.file = new File(this.file + INSTANCE.FILE_EXTENSION);
                 out = new PrintStream(this.file);
                 /*
                  for (Session s : this.sessionListModel) {
@@ -455,8 +458,26 @@ public class TutorThing {
          */
         private void saveDialog() {
             JFileChooser chooser = new JFileChooser();
+            FileFilter ff =  new FileFilter() {
+
+        @Override
+        public boolean accept(File f) {
+            // TODO Auto-generated method stub
+            return f.getName().endsWith(FILE_EXTENSION);
+        }
+
+        @Override
+        public String getDescription() {
+            return "CSV";
+        }
+
+    };
+                    chooser.addChoosableFileFilter(ff);
+                    chooser.setAcceptAllFileFilterUsed(true);
+                    chooser.setFileFilter(ff);
             chooser.showSaveDialog(null);
-            this.file = chooser.getSelectedFile();
+            this.file =  chooser.getSelectedFile();
+            //this.file =  new File(chooser.getSelectedFile().getName() + INSTANCE.FILE_EXTENSION);
 
             try {
 
