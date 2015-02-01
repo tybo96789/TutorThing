@@ -7,11 +7,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.PrintStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Vector;
 import javax.swing.filechooser.FileFilter;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.table.*;
 // import java.*; // you know you want to p.s. i think i got rid of a few imports by accident
 
 /**
@@ -39,12 +37,10 @@ public class TutorThing {
         private final TutorManagement INSTANCE = this;
 
         // Panel Stuff
-        private ArrayList<Container> containers = new ArrayList<Container>();
         private Container listContainer = new Container();
         private Container buttonContainer = new Container();
         private JPanel panel = new JPanel();
-
-        private JScrollPane listPane;
+  
         private final int SCROLL_PANE_OFFSET_WIDTH = 0, SCROLL_PANE_OFFSET_HEIGHT = 0;
 
         private JPanel buttonPanel = new JPanel();
@@ -57,7 +53,6 @@ public class TutorThing {
         private JLabel courseLabel = new JLabel("Course");
         private JLabel instructorLabel = new JLabel("Instructor");
         private JLabel tutorLabel = new JLabel("Tutor");
-        private JLabel startTime = new JLabel("Start Time");
 
         //JTextFields
         private final int COL_WIDTH = 30;
@@ -69,10 +64,12 @@ public class TutorThing {
         private JTextField tutor = new JTextField();
 
         // Buttons
-        private final JButton ADD = new JButton("ADD");
-        private final JButton REMOVE = new JButton("REMOVE");
+        private final JButton ADD_BUTTON = new JButton("ADD");
+        //private final JButton REMOVE_BUTTON = new JButton("REMOVE");
+        private final JButton CLEAR_BUTTON = new JButton("CLEAR");
+        private final ArrayList<JButton> REMOVE_BUTTON = new ArrayList();
 
-        // JMenu (to be added)
+        // JMenu (to be added) 
         private JMenu menu = new JMenu();
         private JMenuBar menuBar = new JMenuBar();
         private JMenuItem newItem;
@@ -80,15 +77,10 @@ public class TutorThing {
         private JMenuItem saveItem;
         private JMenuItem saveAsItem;
         private JMenuItem exitItem;
-        
-        
-        // JTable (testing)
-        private JTable sessionTable = new JTable();
-        private DefaultTableModel sessionTableModel = new DefaultTableModel(1, 7);
 
         // JList (testing)
         private JList LIST;// = new JList();
-        final String[] test = {"First Name", "Last Name", "ID", "Course", "Instructor", "Tutor", "Start Time"};
+        String[] columnName = {"First Name", "Last Name", "ID", "Course", "Instructor", "Tutor", "Time Elapsed", "Start", "Remove"};
 
         private final static DefaultListModel<Session> T_LIST = new DefaultListModel();
 
@@ -102,7 +94,20 @@ public class TutorThing {
         private PrintStream out;
         private boolean isModifed = false;
 
+        private JTable SESSION_TABLE;
+        private JScrollPane scrollPane;
+        JTableButtonModel sessionTableModel = new JTableButtonModel();
+
         public TutorManagement() {
+            TableCellRenderer defaultRenderer;
+
+            sessionTableModel.generateData();
+            SESSION_TABLE = new JTable(sessionTableModel);
+            defaultRenderer = SESSION_TABLE.getDefaultRenderer(JButton.class);
+            SESSION_TABLE.setDefaultRenderer(JButton.class,
+                    new JTableButtonRenderer(defaultRenderer));
+            SESSION_TABLE.setPreferredScrollableViewportSize(new Dimension(400, 200));
+            SESSION_TABLE.addMouseListener(new SessionTableMouseListener(SESSION_TABLE));
 
             //Frame stuff
             this.setTitle(TITLE);
@@ -111,17 +116,10 @@ public class TutorThing {
             this.addWindowListener(new CloseWindowListener());
 
             // Layout
-            this.setLayout(new BorderLayout());
-
-            // builds list
-            //this.buildList();
-            // add containers
-            this.containers.stream().forEach((c) -> {
-                this.add(c);
-            });
+            this.setLayout(new BorderLayout());          
 
             buildPanels();
-            //this.add(listPanel, BorderLayout.CENTER);
+            this.makeMenuBar();
             this.add(buttonPanel, BorderLayout.EAST);
 
             //Used to center the Window to the center of the screen no matter what computer you are using
@@ -132,125 +130,56 @@ public class TutorThing {
             //To adjust the size of the text area when the frame size is adjusted
             //this.addComponentListener(new JFrameComponentAdaptor());            
 
-            /*
-             //Container stuff
-             for (Container c : this.containers) {
-             this.panel.add(c);
-             }
-             this.add(this.panel);
-             */
             //make it visable to the user
             this.setVisible(true);
 
         }
 
-        private void buildJTable() {
-            sessionTable = new JTable(sessionTableModel);
-            sessionTableModel.removeRow(0);
+        private void buildJTable() {            
+            //Scroll Pane            
+            scrollPane = new JScrollPane(SESSION_TABLE);
             
-            // Column names
-            sessionTableModel.setColumnIdentifiers(test);
-            
-            //Scroll Pane
-            this.listPane = new JScrollPane(sessionTable);
-            this.add(this.listPane, BorderLayout.CENTER);
-            this.listPane.setAutoscrolls(true);
-            this.listPane.setBounds(0, 0, this.getWidth() - SCROLL_PANE_OFFSET_WIDTH, this.getHeight() - SCROLL_PANE_OFFSET_HEIGHT);
-            this.listPane.setPreferredSize(new Dimension(this.getWidth() - SCROLL_PANE_OFFSET_WIDTH, this.getHeight() - SCROLL_PANE_OFFSET_HEIGHT));
-            this.listPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-            this.listPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+            this.add(this.scrollPane, BorderLayout.CENTER);
+            this.scrollPane.setAutoscrolls(true);            
+            this.scrollPane.setBounds(0, 0, this.getWidth() - SCROLL_PANE_OFFSET_WIDTH, this.getHeight() - SCROLL_PANE_OFFSET_HEIGHT);
+            this.scrollPane.setPreferredSize(new Dimension(this.getWidth() - SCROLL_PANE_OFFSET_WIDTH, this.getHeight() - SCROLL_PANE_OFFSET_HEIGHT));
+            this.scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+            this.scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);            
         }
         
-        /**
-         * @deprecated 
-         */
-        private void buildList() {
-            //LIST.a
-            //LIST = new JList(test);
-            //LIST.add("hello");
-//            T_LIST.addElement("TEST");
-            //T_LIST.
-            LIST = new JList(T_LIST);
-            LIST.setVisibleRowCount(10);
-        }
-        
-        
-        
-        private void buildButtonPanel() {
-            buttonPanel.add(ADD, BorderLayout.EAST);
-        }
-        
-        /**
-         * @deprecated 
-         */
-        private void buildListPanel() {
-            //test1.add( new Session(System.currentTimeMillis(), "t1", "t1", "t1", "t1", "t1", "t1"));
-            LIST = new JList(sessionListModel);
-            //Scroll Pane
-            this.listPane = new JScrollPane(LIST);
-            //this.getContentPane().add(this.listPanel, BorderLayout.CENTER);
-            this.add(this.listPane, BorderLayout.CENTER);
-            this.listPane.setAutoscrolls(true);
-            //this.listPanel.setViewportView(this.textArea);
-            this.listPane.setBounds(0, 0, this.getWidth() - SCROLL_PANE_OFFSET_WIDTH, this.getHeight() - SCROLL_PANE_OFFSET_HEIGHT);
-            this.listPane.setPreferredSize(new Dimension(this.getWidth() - SCROLL_PANE_OFFSET_WIDTH, this.getHeight() - SCROLL_PANE_OFFSET_HEIGHT));
-            this.listPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-            this.listPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-        }
-
-        private void buildPanels() {
-            /*
-             test1.add( new Session(System.currentTimeMillis(), "t1", "t1", "t1", "t1", "t1", "t1"));
-             LIST = new JList(test1);
-             //Scroll Pane
-             this.listPane = new JScrollPane(LIST);
-             //this.getContentPane().add(this.listPanel, BorderLayout.CENTER);
-             this.add(this.listPane, BorderLayout.CENTER);
-             this.listPane.setAutoscrolls(true);
-             //this.listPanel.setViewportView(this.textArea);
-             this.listPane.setBounds(0, 0, this.getWidth() - SCROLL_PANE_OFFSET_WIDTH, this.getHeight() - SCROLL_PANE_OFFSET_HEIGHT);
-             this.listPane.setPreferredSize(new Dimension(this.getWidth() - SCROLL_PANE_OFFSET_WIDTH, this.getHeight() - SCROLL_PANE_OFFSET_HEIGHT));
-             this.listPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-             this.listPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-             */
-            //this.buildListPanel();
-            this.makeMenuBar();
+        private void buildPanels() {            
             this.buildJTable();
-            //listPanel.add(LIST, BorderLayout.CENTER);
             
-            //Button Panel
             this.buttonPanel.setPreferredSize(new Dimension(this.getWidth() - BUTTON_PANEL_OFFSET_WIDTH, this.getHeight()));
             this.buttonPanel.setBounds(0, 0, this.getWidth() - BUTTON_PANEL_OFFSET_WIDTH, this.getHeight());
-            this.buttonPanel.setLayout(new GridLayout(10,2,30,10));
 
-            this.buttonPanel.add(this.fLabel);
+            this.buttonPanel.add(this.fLabel, BorderLayout.WEST);
             this.fName.setColumns(COL_WIDTH);
-            this.buttonPanel.add(this.fName);
+            this.buttonPanel.add(this.fName, BorderLayout.EAST);
 
-            this.buttonPanel.add(this.lLabel);
+            this.buttonPanel.add(this.lLabel, BorderLayout.WEST);
             this.lName.setColumns(COL_WIDTH);
-            this.buttonPanel.add(this.lName);
+            this.buttonPanel.add(this.lName, BorderLayout.EAST);
 
-            this.buttonPanel.add(this.idLabel);
+            this.buttonPanel.add(this.idLabel, BorderLayout.WEST);
             this.iD.setColumns(COL_WIDTH);
-            this.buttonPanel.add(this.iD);
+            this.buttonPanel.add(this.iD, BorderLayout.EAST);
 
-            this.buttonPanel.add(this.courseLabel);
+            this.buttonPanel.add(this.courseLabel, BorderLayout.WEST);
             this.course.setColumns(COL_WIDTH);
-            this.buttonPanel.add(this.course);
+            this.buttonPanel.add(this.course, BorderLayout.EAST);
 
-            this.buttonPanel.add(this.instructorLabel);
+            this.buttonPanel.add(this.instructorLabel, BorderLayout.WEST);
             this.instructor.setColumns(COL_WIDTH);
-            this.buttonPanel.add(this.instructor);
+            this.buttonPanel.add(this.instructor, BorderLayout.EAST);
 
-            this.buttonPanel.add(this.tutorLabel);
+            this.buttonPanel.add(this.tutorLabel, BorderLayout.WEST);
             this.tutor.setColumns(COL_WIDTH);
-            this.buttonPanel.add(this.tutor);
+            this.buttonPanel.add(this.tutor, BorderLayout.EAST);
 
-            this.ADD.addActionListener(new AddButtonListener());
-            //this.buttonPanel.add(null);
-            buttonPanel.add(ADD);
-        }
+            this.ADD_BUTTON.addActionListener(new AddButtonListener());
+            buttonPanel.add(ADD_BUTTON, BorderLayout.SOUTH);
+        }     
         
         private void makeMenuBar()
         {
@@ -282,8 +211,8 @@ public class TutorThing {
             this.exitItem.setMnemonic('X');
             
             //Register Listeners to menuItems
-            this.newItem.addActionListener(new NewDocumentListener());
-            this.openItem.addActionListener(new OpenDocumentListener());
+            //this.newItem.addActionListener(new NewDocumentListener());
+            //this.openItem.addActionListener(new OpenDocumentListener());
             this.saveItem.addActionListener(new ExportListener());
             this.saveAsItem.addActionListener(new ExportAsDocumentListener());
             this.exitItem.addActionListener(new ExitListener());
@@ -296,19 +225,159 @@ public class TutorThing {
             this.menu.add(this.exitItem);
             
         }
-        
-        
-        /**
-         * @deprecated 
-         */
-        private void makeContainers() {
-           //this.addActionListeners();
 
-            //Container listContainer = new Container();
-            listContainer.add(LIST, BorderLayout.CENTER);
-            buttonContainer.add(ADD, BorderLayout.EAST);
-            //containers.add(listContainer);
-            //containers.add(buttonContainer);
+
+        /*
+         private class ClockListener implements ActionListener {
+
+         private int count;
+
+         @Override
+         public void actionPerformed(ActionEvent e) {
+         count %= N;
+         tf.setText(String.valueOf(count));
+         count++;
+         }
+         }
+         */
+        /**
+         * This class allows us to listen to button events - primarily when it's
+         * pressed.
+         */
+        class SessionTableMouseListener implements MouseListener {
+
+            private final JTable TABLE;
+
+            private void forwardEventToButton(MouseEvent e) {
+                TableColumnModel columnModel = TABLE.getColumnModel();
+                int column = columnModel.getColumnIndexAtX(e.getX());
+                int row = e.getY() / TABLE.getRowHeight();
+                Object value;
+                JButton button;
+                MouseEvent buttonEvent;
+
+                if (row >= TABLE.getRowCount() || row < 0 || column >= TABLE.getColumnCount() || column < 0) {
+                    return;
+                }
+
+                value = TABLE.getValueAt(row, column);
+
+                if (!(value instanceof JButton)) {
+                    return;
+                }
+
+                button = (JButton) value;
+
+                buttonEvent = (MouseEvent) SwingUtilities.convertMouseEvent(TABLE, e, button);
+                button.dispatchEvent(buttonEvent);
+
+                /* 
+                 This is necessary so that when a button is pressed and released
+                 it gets rendered properly.  Otherwise, the button may still appear
+                 pressed down when it has been released.
+                 */
+                TABLE.repaint();
+            }
+
+            public SessionTableMouseListener(JTable table) {
+                this.TABLE = table;
+            }
+
+            public void mouseClicked(MouseEvent e) {
+                this.forwardEventToButton(e);
+            }
+
+            public void mouseEntered(MouseEvent e) {
+                this.forwardEventToButton(e);
+            }
+
+            public void mouseExited(MouseEvent e) {
+                this.forwardEventToButton(e);
+            }
+
+            public void mousePressed(MouseEvent e) {
+                this.forwardEventToButton(e);
+            }
+
+            public void mouseReleased(MouseEvent e) {
+                this.forwardEventToButton(e);
+            }
+        }
+
+        /**
+         * Purpose of this class is to draw a in a cell when called button.
+         */
+        private class JTableButtonRenderer implements TableCellRenderer {
+
+            private TableCellRenderer defaultRenderer;
+
+            public JTableButtonRenderer(TableCellRenderer renderer) {
+                defaultRenderer = renderer;
+            }
+
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                if (value instanceof Component) {
+                    return (Component) value;
+                }
+                return defaultRenderer.getTableCellRendererComponent(
+                        table, value, isSelected, hasFocus, row, column);
+            }
+        } // end JTableButtonRenderer
+
+        static class JTableButtonModel extends AbstractTableModel {
+
+            protected  Vector sessionRow = new Vector();
+            protected  Vector columnNames = new Vector();
+
+            protected void generateData() {                
+                columnNames.add("First Name");
+                columnNames.add("Last Name");
+                columnNames.add("ID");
+                columnNames.add("Course");
+                columnNames.add("Instructor");
+                columnNames.add("Tutor");
+                columnNames.add("Elapsed Time");
+                columnNames.add("Start");
+                columnNames.add("Stop");                
+            }
+
+            public void addData(Object o) {
+                sessionRow.add(o);
+                this.fireTableRowsInserted(0, this.getRowCount());
+                System.out.println("class " + sessionRow);
+            }
+
+            @Override
+            public String getColumnName(int column) {
+                return columnNames.get(column).toString();
+            }
+
+            @Override
+            public int getRowCount() {                
+                    return sessionRow.size() / columnNames.size();                               
+            }
+
+            @Override
+            public int getColumnCount() {                
+                return columnNames.size();
+            }
+
+            @Override
+            public Object getValueAt(int row, int column) {
+
+                return sessionRow.get((row * getColumnCount()) + column);
+            }
+
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+
+            @Override
+            public Class getColumnClass(int column) {
+                return getValueAt(0, column).getClass();
+            }
         }
 
         private class AddButtonListener implements ActionListener {
@@ -322,71 +391,29 @@ public class TutorThing {
                         || INSTANCE.instructor.getText().isEmpty()
                         || INSTANCE.tutor.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(null, "A Field is Missing Information", "Error", JOptionPane.ERROR_MESSAGE);
-                } 
-                else if(!INSTANCE.iD.getText().matches("@[0-9]{8}") && !INSTANCE.iD.getText().matches("[0-9]{8}")) JOptionPane.showMessageDialog(null, "ID is Invalid!", "Error", JOptionPane.ERROR_MESSAGE);
-                else {
-
-                        
-                   
-                    Vector<String> fieldList = new Vector();
+                } else {                    
+                    // Timer newTimer = SESSION_TIMER.get(sessionTableModel.getRowCount() - 1);// = new Timer(0, null);
+                    // newTimer = new Timer(0, null);
+                    int seconds = 0;
                     
-                    fieldList.add(INSTANCE.fName.getText().trim());
-                    fieldList.add(INSTANCE.lName.getText().trim());
-                    if(INSTANCE.iD.getText().matches("[0-9]{8}"))
-                        fieldList.add("@" + INSTANCE.iD.getText().trim());
-                    else
-                        fieldList.add(INSTANCE.iD.getText().trim());
-                    fieldList.add(INSTANCE.course.getText().trim());
-                    fieldList.add(INSTANCE.instructor.getText().trim());
-                    fieldList.add(INSTANCE.tutor.getText().trim());
-                    DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-                    fieldList.add(dateFormat.format(new Date()));
-
-                    // * replaced the list - uncomment this part if you want to see what
-                    // * the list version of this looked like.
-                     INSTANCE.sessionListModel.addElement(new Session(System.currentTimeMillis(),
-                     INSTANCE.fName.getText().trim(),
-                     INSTANCE.lName.getText().trim(),
-                     INSTANCE.iD.getText().trim(),
-                     INSTANCE.course.getText().trim(),
-                     INSTANCE.instructor.getText().trim(),
-                     INSTANCE.tutor.getText().trim()));
+                    sessionTableModel.addData(INSTANCE.fName.getText().trim());
+                    sessionTableModel.addData(INSTANCE.lName.getText().trim());
+                    sessionTableModel.addData(INSTANCE.iD.getText().trim());
+                    sessionTableModel.addData(INSTANCE.course.getText().trim());
+                    sessionTableModel.addData(INSTANCE.instructor.getText().trim());
+                    sessionTableModel.addData(INSTANCE.tutor.getText().trim());
+                    sessionTableModel.addData(new Timer(0, null));
+                    sessionTableModel.addData(new JButton("Re/Start"));
+                    sessionTableModel.addData(new JButton("Stop"));
+                    System.out.println("listener " + sessionTableModel.sessionRow);
                     
-                    /*
-                     // Update List
-                     INSTANCE.LIST = new JList(sessionListModel);
-                     //INSTANCE.listPane.add(INSTANCE.LIST);
-                     LIST = new JList(sessionListModel);
-                     //INSTANCE.buildListPanel();
-                     */
-                    /*
-                    for (int i = 0; i < fieldList.size(); i++) {
-                        sessionTableModel.setValueAt(fieldList.get(i), sessionTableModel.getRowCount() - 1, i);
-                    }
-                   */
-                    
-                    // adds a new row
-                    sessionTableModel.addRow(fieldList);
-                    
-                    
-
                     // Reset TextFields
                     INSTANCE.fName.setText("");
                     INSTANCE.lName.setText("");
                     INSTANCE.iD.setText("");
                     INSTANCE.course.setText("");
                     INSTANCE.instructor.setText("");
-                    INSTANCE.tutor.setText("");
-                    
-                    /*
-                     //for (int i = 0; i < 10; i++) {
-                     System.out.println("adding to list...");
-                     T_LIST.addElement(new Session(System.currentTimeMillis(), firstName, lastName, ID, course, instructor, tutor));
-                     System.out.println("successfully added...");
-                     //}
-                     LIST = new JList(T_LIST);
-                     System.out.println("ADD BUTTON - ACTION FINISHED");
-                     */
+                    INSTANCE.tutor.setText("");                    
                 }
             }
 
@@ -399,8 +426,7 @@ public class TutorThing {
                 throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         } // end RemoveButtonListener  
-        
-        
+
         private void detectChanges() {
             if (this.startingSize != this.sessionListModel.size()) {
                 this.isModifed = true;
@@ -412,8 +438,6 @@ public class TutorThing {
 
         private void saveData() {
             try {
-                if(!this.file.getName().toUpperCase().endsWith(INSTANCE.FILE_EXTENSION))
-                    this.file = new File(this.file + INSTANCE.FILE_EXTENSION);
                 out = new PrintStream(this.file);
                 /*
                  for (Session s : this.sessionListModel) {
@@ -457,6 +481,7 @@ public class TutorThing {
          */
         private void saveDialog() {
             JFileChooser chooser = new JFileChooser();
+            
             FileFilter ff =  new FileFilter() {
 
         @Override
@@ -477,6 +502,7 @@ public class TutorThing {
             chooser.showSaveDialog(null);
             this.file =  chooser.getSelectedFile();
             //this.file =  new File(chooser.getSelectedFile().getName() + INSTANCE.FILE_EXTENSION);
+
 
             try {
 
@@ -594,34 +620,6 @@ public class TutorThing {
         }
 
     }
-    
-    /**
-     * TODO
-     */
-    private static class NewDocumentListener implements ActionListener {
-
-        public NewDocumentListener() {
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent ae) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-    }
-    
-    /**
-     * TODO
-     */
-    private static class OpenDocumentListener implements ActionListener {
-
-        public OpenDocumentListener() {
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent ae) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-    }
 }
 
 class Session {
@@ -645,9 +643,7 @@ class Session {
 
     @Override
     public String toString() {
-        DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
-        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");            
-        return dateFormat.format(new Date(this.start)) + "," + this.lName + "," + this.fName + "," + this.iD + "," + this.course + "," + this.instructor + "," + this.tutor + "," + timeFormat.format(new Date(this.start)) + "," + this.end;
+        return this.lName + "," + this.fName + "," + this.iD + "," + this.course + "," + this.instructor + "," + this.tutor + "," + this.start + "," + this.end;
     }
 
 }
