@@ -328,7 +328,7 @@ public class TutorThing {
                     fieldList.add(INSTANCE.tutor.getText().trim());
                     DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
                     fieldList.add(dateFormat.format(new Date()));
-                    /*
+
                     // * replaced the list - uncomment this part if you want to see what
                     // * the list version of this looked like.
                      INSTANCE.sessionListModel.addElement(new Session(System.currentTimeMillis(),
@@ -339,7 +339,7 @@ public class TutorThing {
                      INSTANCE.instructor.getText().trim(),
                      INSTANCE.tutor.getText().trim()));
                     
-                    
+                    /*
                      // Update List
                      INSTANCE.LIST = new JList(sessionListModel);
                      //INSTANCE.listPane.add(INSTANCE.LIST);
@@ -646,7 +646,9 @@ class Session {
 
     @Override
     public String toString() {
-        return this.lName + "," + this.fName + "," + this.iD + "," + this.course + "," + this.instructor + "," + this.tutor + "," + this.start + "," + this.end;
+        DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");            
+        return dateFormat.format(new Date(this.start)) + "," + this.lName + "," + this.fName + "," + this.iD + "," + this.course + "," + this.instructor + "," + this.tutor + "," + timeFormat.format(new Date(this.start)) + "," + this.end;
     }
 
 }
