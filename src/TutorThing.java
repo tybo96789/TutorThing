@@ -217,36 +217,38 @@ public class TutorThing {
             this.makeMenuBar();
             this.buildJTable();
             //listPanel.add(LIST, BorderLayout.CENTER);
+            
             //Button Panel
             this.buttonPanel.setPreferredSize(new Dimension(this.getWidth() - BUTTON_PANEL_OFFSET_WIDTH, this.getHeight()));
             this.buttonPanel.setBounds(0, 0, this.getWidth() - BUTTON_PANEL_OFFSET_WIDTH, this.getHeight());
+            this.buttonPanel.setLayout(new GridLayout(7,2,50,30));
 
-            this.buttonPanel.add(this.fLabel, BorderLayout.WEST);
+            this.buttonPanel.add(this.fLabel);
             this.fName.setColumns(COL_WIDTH);
-            this.buttonPanel.add(this.fName, BorderLayout.EAST);
+            this.buttonPanel.add(this.fName);
 
-            this.buttonPanel.add(this.lLabel, BorderLayout.WEST);
+            this.buttonPanel.add(this.lLabel);
             this.lName.setColumns(COL_WIDTH);
-            this.buttonPanel.add(this.lName, BorderLayout.EAST);
+            this.buttonPanel.add(this.lName);
 
-            this.buttonPanel.add(this.idLabel, BorderLayout.WEST);
+            this.buttonPanel.add(this.idLabel);
             this.iD.setColumns(COL_WIDTH);
-            this.buttonPanel.add(this.iD, BorderLayout.EAST);
+            this.buttonPanel.add(this.iD);
 
-            this.buttonPanel.add(this.courseLabel, BorderLayout.WEST);
+            this.buttonPanel.add(this.courseLabel);
             this.course.setColumns(COL_WIDTH);
-            this.buttonPanel.add(this.course, BorderLayout.EAST);
+            this.buttonPanel.add(this.course);
 
-            this.buttonPanel.add(this.instructorLabel, BorderLayout.WEST);
+            this.buttonPanel.add(this.instructorLabel);
             this.instructor.setColumns(COL_WIDTH);
-            this.buttonPanel.add(this.instructor, BorderLayout.EAST);
+            this.buttonPanel.add(this.instructor);
 
-            this.buttonPanel.add(this.tutorLabel, BorderLayout.WEST);
+            this.buttonPanel.add(this.tutorLabel);
             this.tutor.setColumns(COL_WIDTH);
-            this.buttonPanel.add(this.tutor, BorderLayout.EAST);
+            this.buttonPanel.add(this.tutor);
 
             this.ADD.addActionListener(new AddButtonListener());
-            buttonPanel.add(ADD, BorderLayout.SOUTH);
+            buttonPanel.add(ADD);
         }
         
         private void makeMenuBar()
