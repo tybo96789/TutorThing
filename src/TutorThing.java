@@ -72,6 +72,15 @@ public class TutorThing {
         private final JButton REMOVE = new JButton("REMOVE");
 
         // JMenu (to be added)
+        private JMenu menu = new JMenu();
+        private JMenuBar menuBar = new JMenuBar();
+        private JMenuItem newItem;
+        private JMenuItem openItem;
+        private JMenuItem saveItem;
+        private JMenuItem saveAsItem;
+        private JMenuItem exitItem;
+        
+        
         // JTable (testing)
         private JTable sessionTable = new JTable();
         private DefaultTableModel sessionTableModel = new DefaultTableModel(1, 7);
@@ -198,6 +207,7 @@ public class TutorThing {
              this.listPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
              */
             //this.buildListPanel();
+            this.makeMenuBar();
             this.buildJTable();
             //listPanel.add(LIST, BorderLayout.CENTER);
             //Button Panel
@@ -230,6 +240,51 @@ public class TutorThing {
 
             this.ADD.addActionListener(new AddButtonListener());
             buttonPanel.add(ADD, BorderLayout.SOUTH);
+        }
+        
+        private void makeMenuBar()
+        {
+            //Make menu bar
+            this.menuBar = new JMenuBar();
+            this.menu = new JMenu("File");
+            this.setJMenuBar(menuBar);
+            this.menuBar.add(this.menu);
+            
+            //Make MenuItems
+            this.newItem = new JMenuItem("New");
+            this.openItem = new JMenuItem("Open");
+            this.saveItem = new JMenuItem("Export");
+            this.saveAsItem = new JMenuItem("Export as");
+            this.exitItem = new JMenuItem("Exit");
+            
+            
+            //Make MenuItems Accelerators
+            this.newItem.setAccelerator(KeyStroke.getKeyStroke('N',Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(),true));
+            this.openItem.setAccelerator(KeyStroke.getKeyStroke('O',Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(),true));
+            this.saveItem.setAccelerator(KeyStroke.getKeyStroke('S',Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(),true));
+            this.saveAsItem.setAccelerator(KeyStroke.getKeyStroke('S',Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() + InputEvent.SHIFT_DOWN_MASK,true));
+            
+            //Make MenuItems Mnemonic
+            this.newItem.setMnemonic('N');
+            this.openItem.setMnemonic('O');
+            this.saveItem.setMnemonic('S');
+            this.saveAsItem.setMnemonic('A');
+            this.exitItem.setMnemonic('X');
+            
+            //Register Listeners to menuItems
+            this.newItem.addActionListener(new NewDocumentListener());
+            this.openItem.addActionListener(new OpenDocumentListener());
+            this.saveItem.addActionListener(new ExportListener());
+            this.saveAsItem.addActionListener(new ExportAsDocumentListener());
+            this.exitItem.addActionListener(new ExitListener());
+            
+            //Add to Menu
+            this.menu.add(this.newItem);
+            this.menu.add(this.openItem);
+            this.menu.add(this.saveItem);
+            this.menu.add(this.saveAsItem);
+            this.menu.add(this.exitItem);
+            
         }
 
         private void makeContainers() {
@@ -518,6 +573,34 @@ public class TutorThing {
             }
         }
 
+    }
+    
+    /**
+     * TODO
+     */
+    private static class NewDocumentListener implements ActionListener {
+
+        public NewDocumentListener() {
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+    }
+    
+    /**
+     * TODO
+     */
+    private static class OpenDocumentListener implements ActionListener {
+
+        public OpenDocumentListener() {
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
     }
 }
 
