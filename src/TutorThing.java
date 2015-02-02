@@ -10,6 +10,7 @@ import java.io.PrintStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Vector;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.table.*;
 import javax.swing.filechooser.FileFilter;
 // import java.*; // you know you want to p.s. i think i got rid of a few imports by accident
@@ -72,7 +73,7 @@ public class TutorThing {
         private final JButton CLEAR_BUTTON = new JButton("CLEAR");
         private final ArrayList<JButton> REMOVE_BUTTON = new ArrayList();
 
-        // JMenu (to be added)
+        // JMenu (to be added) 
         private JMenu menu = new JMenu();
         private JMenuBar menuBar = new JMenuBar();
         private JMenuItem newItem;
@@ -81,8 +82,6 @@ public class TutorThing {
         private JMenuItem saveAsItem;
         private JMenuItem exitItem;
 
-        // JTable (testing)
-        //private JTable sessionTable = new JTable();        
         // JList (testing)
         //Application Stuff
         private DefaultListModel<Session> sessionListModel = new DefaultListModel<>();
@@ -128,6 +127,7 @@ public class TutorThing {
             this.setLayout(new BorderLayout());
 
             buildPanels();
+            this.makeMenuBar();
             this.add(buttonPanel, BorderLayout.EAST);
 
             //Used to center the Window to the center of the screen no matter what computer you are using
@@ -188,7 +188,53 @@ public class TutorThing {
 
             this.ADD_BUTTON.addActionListener(new AddButtonListener());
             buttonPanel.add(ADD_BUTTON, BorderLayout.SOUTH);
+        }     
+        
+        private void makeMenuBar()
+        {
+            //Make menu bar
+            this.menuBar = new JMenuBar();
+            this.menu = new JMenu("File");
+            this.setJMenuBar(menuBar);
+            this.menuBar.add(this.menu);
+            
+            //Make MenuItems
+            this.newItem = new JMenuItem("New");
+            this.openItem = new JMenuItem("Open");
+            this.saveItem = new JMenuItem("Export");
+            this.saveAsItem = new JMenuItem("Export as");
+            this.exitItem = new JMenuItem("Exit");
+            
+            
+            //Make MenuItems Accelerators
+            this.newItem.setAccelerator(KeyStroke.getKeyStroke('N',Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(),true));
+            this.openItem.setAccelerator(KeyStroke.getKeyStroke('O',Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(),true));
+            this.saveItem.setAccelerator(KeyStroke.getKeyStroke('S',Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(),true));
+            this.saveAsItem.setAccelerator(KeyStroke.getKeyStroke('S',Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() + InputEvent.SHIFT_DOWN_MASK,true));
+            
+            //Make MenuItems Mnemonic
+            this.newItem.setMnemonic('N');
+            this.openItem.setMnemonic('O');
+            this.saveItem.setMnemonic('S');
+            this.saveAsItem.setMnemonic('A');
+            this.exitItem.setMnemonic('X');
+            
+            //Register Listeners to menuItems
+            //this.newItem.addActionListener(new NewDocumentListener());
+            //this.openItem.addActionListener(new OpenDocumentListener());
+            this.saveItem.addActionListener(new ExportListener());
+            this.saveAsItem.addActionListener(new ExportAsDocumentListener());
+            this.exitItem.addActionListener(new ExitListener());
+            
+            //Add to Menu
+            this.menu.add(this.newItem);
+            this.menu.add(this.openItem);
+            this.menu.add(this.saveItem);
+            this.menu.add(this.saveAsItem);
+            this.menu.add(this.exitItem);
+            
         }
+
 
         /**
          * This class allows us to listen to button events - primarily when it's
@@ -253,6 +299,7 @@ public class TutorThing {
                 this.forwardEventToButton(e);
             }
         }
+       
 
         private void makeMenuBar() {
             //Make menu bar
@@ -568,28 +615,28 @@ public class TutorThing {
          *//*
         private void saveDialog() {
             JFileChooser chooser = new JFileChooser();
-            FileFilter ff = new FileFilter() {
+            
+            FileFilter ff =  new FileFilter() {
 
-                3
+        @Override
+        public boolean accept(File f) {
+            // TODO Auto-generated method stub
+            return f.getName().endsWith(FILE_EXTENSION);
+        }
 
-         @Override
-                public boolean accept(File f) {
-                    // TODO Auto-generated method stub
-                    return f.getName().endsWith(FILE_EXTENSION);
-                }
+        @Override
+        public String getDescription() {
+            return "CSV";
+        }
 
-                @Override
-                public String getDescription() {
-                    return "CSV";
-                }
-
-            };
-            chooser.addChoosableFileFilter(ff);
-            chooser.setAcceptAllFileFilterUsed(true);
-            chooser.setFileFilter(ff);
+    };
+                    chooser.addChoosableFileFilter(ff);
+                    chooser.setAcceptAllFileFilterUsed(true);
+                    chooser.setFileFilter(ff);
             chooser.showSaveDialog(null);
-            this.file = chooser.getSelectedFile();
+            this.file =  chooser.getSelectedFile();
             //this.file =  new File(chooser.getSelectedFile().getName() + INSTANCE.FILE_EXTENSION);
+
 
             try {
 
