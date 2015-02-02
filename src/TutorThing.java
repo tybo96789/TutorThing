@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.Vector;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.*;
+import javax.swing.filechooser.FileFilter;
 // import java.*; // you know you want to p.s. i think i got rid of a few imports by accident
 
 /**
@@ -65,6 +66,9 @@ public class TutorThing {
         private JTextField course = new JTextField();
         private JTextField instructor = new JTextField();
         private JTextField tutor = new JTextField();
+
+        // Timers
+        private final ArrayList<Timer> TIMERS = new ArrayList();
 
         // Buttons
         private final JButton ADD_BUTTON = new JButton("ADD");
@@ -187,51 +191,49 @@ public class TutorThing {
 
             this.ADD_BUTTON.addActionListener(new AddButtonListener());
             buttonPanel.add(ADD_BUTTON, BorderLayout.SOUTH);
-        }     
-        
-        private void makeMenuBar()
-        {
+        }
+
+        private void makeMenuBar() {
             //Make menu bar
             this.menuBar = new JMenuBar();
             this.menu = new JMenu("File");
             this.setJMenuBar(menuBar);
             this.menuBar.add(this.menu);
-            
+
             //Make MenuItems
             this.newItem = new JMenuItem("New");
             this.openItem = new JMenuItem("Open");
             this.saveItem = new JMenuItem("Export");
             this.saveAsItem = new JMenuItem("Export as");
             this.exitItem = new JMenuItem("Exit");
-            
-            
+
             //Make MenuItems Accelerators
-            this.newItem.setAccelerator(KeyStroke.getKeyStroke('N',Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(),true));
-            this.openItem.setAccelerator(KeyStroke.getKeyStroke('O',Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(),true));
-            this.saveItem.setAccelerator(KeyStroke.getKeyStroke('S',Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(),true));
-            this.saveAsItem.setAccelerator(KeyStroke.getKeyStroke('S',Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() + InputEvent.SHIFT_DOWN_MASK,true));
-            
+            this.newItem.setAccelerator(KeyStroke.getKeyStroke('N', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(), true));
+            this.openItem.setAccelerator(KeyStroke.getKeyStroke('O', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(), true));
+            this.saveItem.setAccelerator(KeyStroke.getKeyStroke('S', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(), true));
+            this.saveAsItem.setAccelerator(KeyStroke.getKeyStroke('S', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() + InputEvent.SHIFT_DOWN_MASK, true));
+
             //Make MenuItems Mnemonic
             this.newItem.setMnemonic('N');
             this.openItem.setMnemonic('O');
             this.saveItem.setMnemonic('S');
             this.saveAsItem.setMnemonic('A');
             this.exitItem.setMnemonic('X');
-            
+
             //Register Listeners to menuItems
             //this.newItem.addActionListener(new NewDocumentListener());
             //this.openItem.addActionListener(new OpenDocumentListener());
             this.saveItem.addActionListener(new ExportListener());
             this.saveAsItem.addActionListener(new ExportAsDocumentListener());
             this.exitItem.addActionListener(new ExitListener());
-            
+
             //Add to Menu
             this.menu.add(this.newItem);
             this.menu.add(this.openItem);
             this.menu.add(this.saveItem);
             this.menu.add(this.saveAsItem);
             this.menu.add(this.exitItem);
-            
+
         }
 
 
@@ -262,9 +264,15 @@ public class TutorThing {
                 }
 
                 button = (JButton) value;
-
                 buttonEvent = (MouseEvent) SwingUtilities.convertMouseEvent(TABLE, e, button);
                 button.dispatchEvent(buttonEvent);
+
+                if (column == columnModel.getColumnCount() - 1) {
+                    TIMERS.get(row).stop();
+                } else {
+                    TIMERS.get(row).start();
+                }
+
 
                 /* 
                  This is necessary so that when a button is pressed and released
@@ -278,22 +286,27 @@ public class TutorThing {
                 this.TABLE = table;
             }
 
+            @Override
             public void mouseClicked(MouseEvent e) {
                 this.forwardEventToButton(e);
             }
 
+            @Override
             public void mouseEntered(MouseEvent e) {
-                this.forwardEventToButton(e);
+                //this.forwardEventToButton(e);
             }
 
+            @Override
             public void mouseExited(MouseEvent e) {
-                this.forwardEventToButton(e);
+                //this.forwardEventToButton(e);
             }
 
+            @Override
             public void mousePressed(MouseEvent e) {
                 this.forwardEventToButton(e);
             }
 
+            @Override
             public void mouseReleased(MouseEvent e) {
                 this.forwardEventToButton(e);
             }
@@ -444,8 +457,7 @@ public class TutorThing {
                     JButton stopButton = new JButton("Stop");
                     int seconds = 0;
 
-                    System.out.println("outer from: " + e.getSource());
-
+                    // System.out.println("outer from: " + e.getSource()); // debugging aid
                     sessionTableModel.addData(INSTANCE.fName.getText().trim());
                     sessionTableModel.addData(INSTANCE.lName.getText().trim());
                     sessionTableModel.addData(INSTANCE.iD.getText().trim());
@@ -464,6 +476,9 @@ public class TutorThing {
                     // start time
                     timer.setDelay(1000);
                     timer.start();
+
+                    // store timer into TIMERS arraylist
+                    TIMERS.add(timer);
 
                     // Reset TextFields
                     INSTANCE.fName.setText("");
@@ -557,7 +572,7 @@ public class TutorThing {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (INSTANCE.file == null) {
-                    INSTANCE.saveDialog();
+                    //INSTANCE.saveDialog();
                 } else {
                     INSTANCE.saveData();
                 }
@@ -568,46 +583,46 @@ public class TutorThing {
         /**
          * If the user has not saved the new file before this method will open
          * up a file explorer to ask the user where to save the file
-         */
-        private void saveDialog() {
-            JFileChooser chooser = new JFileChooser();
+         *//*
+         private void saveDialog() {
+         JFileChooser chooser = new JFileChooser();
             
-            FileFilter ff =  new FileFilter() {
+         FileFilter ff =  new FileFilter() {
 
-        @Override
-        public boolean accept(File f) {
-            // TODO Auto-generated method stub
-            return f.getName().endsWith(FILE_EXTENSION);
-        }
+         @Override
+         public boolean accept(File f) {
+         // TODO Auto-generated method stub
+         return f.getName().endsWith(FILE_EXTENSION);
+         }
 
-        @Override
-        public String getDescription() {
-            return "CSV";
-        }
+         @Override
+         public String getDescription() {
+         return "CSV";
+         }
 
-    };
-                    chooser.addChoosableFileFilter(ff);
-                    chooser.setAcceptAllFileFilterUsed(true);
-                    chooser.setFileFilter(ff);
-            chooser.showSaveDialog(null);
-            this.file =  chooser.getSelectedFile();
-            //this.file =  new File(chooser.getSelectedFile().getName() + INSTANCE.FILE_EXTENSION);
+         };
+         chooser.addChoosableFileFilter(ff);
+         chooser.setAcceptAllFileFilterUsed(true);
+         chooser.setFileFilter(ff);
+         chooser.showSaveDialog(null);
+         this.file =  chooser.getSelectedFile();
+         //this.file =  new File(chooser.getSelectedFile().getName() + INSTANCE.FILE_EXTENSION);
 
 
-            try {
+         try {
 
-                if (file != null) {
-                    this.saveData();
-                    this.isModifed = false;
-                }
+         if (file != null) {
+         this.saveData();
+         this.isModifed = false;
+         }
 
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, e.getMessage(), "Error Saving File", JOptionPane.ERROR_MESSAGE);
+         } catch (Exception e) {
+         JOptionPane.showMessageDialog(null, e.getMessage(), "Error Saving File", JOptionPane.ERROR_MESSAGE);
 
-            }
+         }
 
-        }
-        
+         }
+         */
 
         /**
          * The ending action method will check if there is any unsaved changes
@@ -652,7 +667,7 @@ public class TutorThing {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                INSTANCE.saveDialog();
+                //INSTANCE.saveDialog();
             }
 
         }
