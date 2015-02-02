@@ -13,6 +13,7 @@ import java.util.Vector;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.*;
 import javax.swing.filechooser.FileFilter;
+import java.text.SimpleDateFormat;
 // import java.*; // you know you want to p.s. i think i got rid of a few imports by accident
 
 /**
@@ -69,6 +70,7 @@ public class TutorThing {
 
         // Timers
         private final ArrayList<Timer> TIMERS = new ArrayList();
+        private final SimpleDateFormat SDF = new SimpleDateFormat("mm:ss");
 
         // Buttons
         private final JButton ADD_BUTTON = new JButton("ADD");
@@ -432,10 +434,12 @@ public class TutorThing {
             public void actionPerformed(ActionEvent e) {
                 getTimePanelPos();
                 JLabel timeLabel = (JLabel) sessionTableModel.getValueAt(row, colValue);
-                int t = Integer.parseInt(timeLabel.getText());
-                timeLabel.setText((t + 1) + "");
+                String formattedTime = timeLabel.getText();
+                String[] timeArray = formattedTime.split(":");
+                int time = Integer.parseInt(timeArray[0])*60 + Integer.parseInt(timeArray[1]);                
+                timeLabel.setText(SDF.format((time+1)*1000));
                 repaint();
-               // System.out.println("inner from: " + e.getSource());
+                //System.out.println("time: + " + time );
             }
 
         }
@@ -452,7 +456,7 @@ public class TutorThing {
                         || INSTANCE.tutor.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(null, "A Field is Missing Information", "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    JLabel timeLabel = new JLabel("0");
+                    JLabel timeLabel = new JLabel("00:00");
                     JButton startButton = new JButton("Start");
                     JButton stopButton = new JButton("Stop");
                     int seconds = 0;
@@ -583,7 +587,7 @@ public class TutorThing {
         /**
          * If the user has not saved the new file before this method will open
          * up a file explorer to ask the user where to save the file
-         *//*
+         *////*
          private void saveDialog() {
          JFileChooser chooser = new JFileChooser();
             
@@ -622,7 +626,7 @@ public class TutorThing {
          }
 
          }
-         */
+         //*/
 
         /**
          * The ending action method will check if there is any unsaved changes
