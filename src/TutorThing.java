@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 /**
  *
  * @author Tyler Atiburcio, Lawrence Ruffin
- * @version 0
+ * @version 1
  */
 public class TutorThing {
 
