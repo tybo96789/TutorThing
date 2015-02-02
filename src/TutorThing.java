@@ -13,10 +13,7 @@ import java.util.Vector;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.*;
 import javax.swing.filechooser.FileFilter;
-<<<<<<< HEAD
-=======
 import java.text.SimpleDateFormat;
->>>>>>> blah
 // import java.*; // you know you want to p.s. i think i got rid of a few imports by accident
 
 /**
@@ -61,10 +58,6 @@ public class TutorThing {
         private JLabel instructorLabel = new JLabel("Instructor");
         private JLabel tutorLabel = new JLabel("Tutor");
         private JLabel startTime = new JLabel("Start Time");
-<<<<<<< HEAD
-        private JLabel export = new JLabel("Export");
-=======
->>>>>>> blah
 
         //JTextFields
         private final int COL_WIDTH = 30;
@@ -77,10 +70,7 @@ public class TutorThing {
 
         // Timers
         private final ArrayList<Timer> TIMERS = new ArrayList();
-<<<<<<< HEAD
-=======
         private final SimpleDateFormat SDF = new SimpleDateFormat("mm:ss");
->>>>>>> blah
 
         // Buttons
         private final JButton ADD_BUTTON = new JButton("ADD");
@@ -203,14 +193,9 @@ public class TutorThing {
             this.buttonPanel.add(this.tutor);
 
             this.ADD_BUTTON.addActionListener(new AddButtonListener());
-<<<<<<< HEAD
-            buttonPanel.add(ADD_BUTTON);
-            
             this.EXPORT_BUTTON.addActionListener(new ExportListener());
-            this.buttonPanel.add(this.EXPORT_BUTTON);
-=======
             buttonPanel.add(ADD_BUTTON, BorderLayout.SOUTH);
->>>>>>> blah
+            this.buttonPanel.add(this.EXPORT_BUTTON);
         }
 
         private void makeMenuBar() {
@@ -253,15 +238,9 @@ public class TutorThing {
             this.menu.add(this.saveItem);
             this.menu.add(this.saveAsItem);
             this.menu.add(this.exitItem);
-<<<<<<< HEAD
 
         }
 
-=======
-
-        }
-
->>>>>>> blah
 
         /**
          * This class allows us to listen to button events - primarily when it's
@@ -295,11 +274,8 @@ public class TutorThing {
 
                 if (column == columnModel.getColumnCount() - 1) {
                     TIMERS.get(row).stop();
-<<<<<<< HEAD
                     INSTANCE.sessionListModel.get(row).setEndTime(System.currentTimeMillis());
-                    
-=======
->>>>>>> blah
+
                 } else {
                     TIMERS.get(row).start();
                 }
@@ -463,19 +439,12 @@ public class TutorThing {
             public void actionPerformed(ActionEvent e) {
                 getTimePanelPos();
                 JLabel timeLabel = (JLabel) sessionTableModel.getValueAt(row, colValue);
-<<<<<<< HEAD
-                int t = Integer.parseInt(timeLabel.getText());
-                timeLabel.setText((t + 1) + "");
-                repaint();
-               // System.out.println("inner from: " + e.getSource());
-=======
                 String formattedTime = timeLabel.getText();
                 String[] timeArray = formattedTime.split(":");
                 int time = Integer.parseInt(timeArray[0])*60 + Integer.parseInt(timeArray[1]);                
                 timeLabel.setText(SDF.format((time+1)*1000));
                 repaint();
                 //System.out.println("time: + " + time );
->>>>>>> blah
             }
 
         }
@@ -492,11 +461,7 @@ public class TutorThing {
                         || INSTANCE.tutor.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(null, "A Field is Missing Information", "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
-<<<<<<< HEAD
-                    JLabel timeLabel = new JLabel("0");
-=======
                     JLabel timeLabel = new JLabel("00:00");
->>>>>>> blah
                     JButton startButton = new JButton("Start");
                     JButton stopButton = new JButton("Stop");
                     int seconds = 0;
@@ -511,8 +476,9 @@ public class TutorThing {
                     sessionTableModel.addData(timeLabel);
                     sessionTableModel.addData(startButton);
                     sessionTableModel.addData(stopButton);
-<<<<<<< HEAD
-                    
+                    JButton b = new JButton();
+                    stopButton.addActionListener(new stopButtonListener());
+                    //System.out.println("listener " + sessionTableModel.sessionRow); // debugging aid
                     
                     //Add to sessionListModel
                     
@@ -523,17 +489,8 @@ public class TutorThing {
                      INSTANCE.course.getText().trim(),
                      INSTANCE.instructor.getText().trim(),
                      INSTANCE.tutor.getText().trim()));
-                    
-                    JButton b = new JButton();
-                    stopButton.addActionListener(new stopButtonListener());
-                    //System.out.println("listener " + sessionTableModel.sessionRow); // debugging aid
-                    
-=======
-                    JButton b = new JButton();
-                    stopButton.addActionListener(new stopButtonListener());
-                    //System.out.println("listener " + sessionTableModel.sessionRow); // debugging aid
 
->>>>>>> blah
+                    
                     Timer timer = new Timer(seconds, new TimerListener());
 
                     // start time
@@ -620,16 +577,6 @@ public class TutorThing {
                 for (int i = 0; i < sessionListModel.getSize(); i++) {
                     out.println(sessionListModel.get(i).toString());
                 }
-                //This version below is suppose to take the data thats in the table and write to file but some information is missing 
-                /*
-                for (int i = 0; i < this.sessionTableModel.getRowCount(); i++) {
-                    for (int j = 0; j < this.sessionTableModel.getColumnCount(); j++) {
-                        out.print(this.sessionTableModel.getValueAt(i, j) + ",");
-                    }
-                    out.println();
-                    
-                }
-                */
                 out.flush();
                 out.close();
             } catch (Exception ex) {
@@ -645,7 +592,7 @@ public class TutorThing {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (INSTANCE.file == null) {
-                    //INSTANCE.saveDialog();
+                    INSTANCE.saveDialog();
                 } else {
                     INSTANCE.saveData();
                 }
@@ -656,11 +603,7 @@ public class TutorThing {
         /**
          * If the user has not saved the new file before this method will open
          * up a file explorer to ask the user where to save the file
-<<<<<<< HEAD
-         */
-=======
          *////*
->>>>>>> blah
          private void saveDialog() {
          JFileChooser chooser = new JFileChooser();
             
@@ -699,11 +642,7 @@ public class TutorThing {
          }
 
          }
-<<<<<<< HEAD
-         
-=======
          //*/
->>>>>>> blah
 
         /**
          * The ending action method will check if there is any unsaved changes
@@ -748,7 +687,7 @@ public class TutorThing {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                //INSTANCE.saveDialog();
+               INSTANCE.saveDialog();
             }
 
         }
@@ -869,12 +808,6 @@ class Session {
     public String toString() {
         DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-<<<<<<< HEAD
         return dateFormat.format(new Date(this.start)) + "," + this.lName + "," + this.fName + "," + this.iD + "," + this.course + "," + this.instructor + "," + this.tutor + "," + timeFormat.format(new Date(this.start)) + "," + timeFormat.format(new Date(this.end)) ;
     }
 }
-=======
-        return dateFormat.format(new Date(this.start)) + "," + this.lName + "," + this.fName + "," + this.iD + "," + this.course + "," + this.instructor + "," + this.tutor + "," + timeFormat.format(new Date(this.start)) + "," + this.end;
-    }
-}
->>>>>>> blah
