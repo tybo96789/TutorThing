@@ -440,7 +440,7 @@ public class TutorThing {
                     JButton stopButton = new JButton("Stop");
                     int seconds = 0;
 
-                    System.out.println("outer from: " + e.getSource());
+                    // System.out.println("outer from: " + e.getSource()); // debugging aid
 
                     sessionTableModel.addData(INSTANCE.fName.getText().trim());
                     sessionTableModel.addData(INSTANCE.lName.getText().trim());
