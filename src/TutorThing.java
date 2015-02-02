@@ -269,6 +269,8 @@ public class TutorThing {
 
                 if (column == columnModel.getColumnCount() - 1) {
                     TIMERS.get(row).stop();
+                    INSTANCE.sessionListModel.get(row).setEndTime(System.currentTimeMillis());
+                    
                 } else {
                     TIMERS.get(row).start();
                 }
@@ -467,10 +469,22 @@ public class TutorThing {
                     sessionTableModel.addData(timeLabel);
                     sessionTableModel.addData(startButton);
                     sessionTableModel.addData(stopButton);
+                    
+                    
+                    //Add to sessionListModel
+                    
+                    INSTANCE.sessionListModel.addElement(new Session(System.currentTimeMillis(),
+                     INSTANCE.fName.getText().trim(),
+                     INSTANCE.lName.getText().trim(),
+                     INSTANCE.iD.getText().trim(),
+                     INSTANCE.course.getText().trim(),
+                     INSTANCE.instructor.getText().trim(),
+                     INSTANCE.tutor.getText().trim()));
+                    
                     JButton b = new JButton();
                     stopButton.addActionListener(new stopButtonListener());
                     //System.out.println("listener " + sessionTableModel.sessionRow); // debugging aid
-
+                    
                     Timer timer = new Timer(seconds, new TimerListener());
 
                     // start time
@@ -557,6 +571,16 @@ public class TutorThing {
                 for (int i = 0; i < sessionListModel.getSize(); i++) {
                     out.println(sessionListModel.get(i).toString());
                 }
+                //This version below is suppose to take the data thats in the table and write to file but some information is missing 
+                /*
+                for (int i = 0; i < this.sessionTableModel.getRowCount(); i++) {
+                    for (int j = 0; j < this.sessionTableModel.getColumnCount(); j++) {
+                        out.print(this.sessionTableModel.getValueAt(i, j) + ",");
+                    }
+                    out.println();
+                    
+                }
+                */
                 out.flush();
                 out.close();
             } catch (Exception ex) {
@@ -572,7 +596,7 @@ public class TutorThing {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (INSTANCE.file == null) {
-                    //INSTANCE.saveDialog();
+                    INSTANCE.saveDialog();
                 } else {
                     INSTANCE.saveData();
                 }
@@ -583,7 +607,7 @@ public class TutorThing {
         /**
          * If the user has not saved the new file before this method will open
          * up a file explorer to ask the user where to save the file
-         *//*
+         */
          private void saveDialog() {
          JFileChooser chooser = new JFileChooser();
             
@@ -622,7 +646,7 @@ public class TutorThing {
          }
 
          }
-         */
+         
 
         /**
          * The ending action method will check if there is any unsaved changes
@@ -667,7 +691,7 @@ public class TutorThing {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                //INSTANCE.saveDialog();
+                INSTANCE.saveDialog();
             }
 
         }
@@ -771,14 +795,23 @@ class Session {
         this.tutor = tutor;
     }
 
-    public long calcTime() {
-        return (System.nanoTime() - start) / ((long) Math.pow(10, 9));
+    public void calcTime() {
+        this.end = (System.nanoTime() - start) / ((long) Math.pow(10, 9));
+    }
+    
+    public void calcTime(long time)
+    {
+        this.end = (time - start) / ((long) Math.pow(10, 9));
+    }
+    public void setEndTime(long time)
+    {
+        this.end = time;
     }
 
     @Override
     public String toString() {
         DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-        return dateFormat.format(new Date(this.start)) + "," + this.lName + "," + this.fName + "," + this.iD + "," + this.course + "," + this.instructor + "," + this.tutor + "," + timeFormat.format(new Date(this.start)) + "," + this.end;
+        return dateFormat.format(new Date(this.start)) + "," + this.lName + "," + this.fName + "," + this.iD + "," + this.course + "," + this.instructor + "," + this.tutor + "," + timeFormat.format(new Date(this.start)) + "," + timeFormat.format(new Date(this.end)) ;
     }
 }
