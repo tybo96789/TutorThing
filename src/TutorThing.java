@@ -7,8 +7,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.PrintStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Vector;
 import javax.swing.table.*;
 // import java.*; // you know you want to p.s. i think i got rid of a few imports by accident
@@ -41,7 +39,7 @@ public class TutorThing {
         private Container listContainer = new Container();
         private Container buttonContainer = new Container();
         private JPanel panel = new JPanel();
-
+  
         private final int SCROLL_PANE_OFFSET_WIDTH = 0, SCROLL_PANE_OFFSET_HEIGHT = 0;
 
         private JPanel buttonPanel = new JPanel();
@@ -54,7 +52,6 @@ public class TutorThing {
         private JLabel courseLabel = new JLabel("Course");
         private JLabel instructorLabel = new JLabel("Instructor");
         private JLabel tutorLabel = new JLabel("Tutor");
-        private JLabel startTime = new JLabel("Start Time");
 
         //JTextFields
         private final int COL_WIDTH = 30;
@@ -71,18 +68,14 @@ public class TutorThing {
         private final JButton CLEAR_BUTTON = new JButton("CLEAR");
         private final ArrayList<JButton> REMOVE_BUTTON = new ArrayList();
 
-        // JMenu (to be added)
-        private JMenu menu = new JMenu();
-        private JMenuBar menuBar = new JMenuBar();
-        private JMenuItem newItem;
-        private JMenuItem openItem;
-        private JMenuItem saveItem;
-        private JMenuItem saveAsItem;
-        private JMenuItem exitItem;
-
-        // JTable (testing)
-        //private JTable sessionTable = new JTable();        
+        // JMenu (to be added) 
+        
         // JList (testing)
+        private JList LIST;// = new JList();
+        String[] columnName = {"First Name", "Last Name", "ID", "Course", "Instructor", "Tutor", "Time Elapsed", "Start", "Remove"};
+
+        private final static DefaultListModel<Session> T_LIST = new DefaultListModel();
+
         //Application Stuff
         private DefaultListModel<Session> sessionListModel = new DefaultListModel<>();
 
@@ -93,27 +86,18 @@ public class TutorThing {
         private PrintStream out;
         private boolean isModifed = false;
 
-        private final JTable SESSION_TABLE;
+        private JTable SESSION_TABLE;
         private JScrollPane scrollPane;
-        SessionTableModel sessionTableModel = new SessionTableModel();
+        JTableButtonModel sessionTableModel = new JTableButtonModel();
 
         public TutorManagement() {
-            // draws components onto the table
-            TableCellRenderer buttonRenderer;
-            TableCellRenderer labelRenderer;
+            TableCellRenderer defaultRenderer;
 
             sessionTableModel.generateData();
             SESSION_TABLE = new JTable(sessionTableModel);
-
-            buttonRenderer = SESSION_TABLE.getDefaultRenderer(JButton.class);
-            labelRenderer = SESSION_TABLE.getDefaultRenderer(JLabel.class);
-
+            defaultRenderer = SESSION_TABLE.getDefaultRenderer(JButton.class);
             SESSION_TABLE.setDefaultRenderer(JButton.class,
-                    new ComponentRenderer(buttonRenderer));
-            SESSION_TABLE.setDefaultRenderer(JLabel.class,
-                    new ComponentRenderer(labelRenderer));
-
-            // Adjusts SESSION_TABLE
+                    new JTableButtonRenderer(defaultRenderer));
             SESSION_TABLE.setPreferredScrollableViewportSize(new Dimension(400, 200));
             SESSION_TABLE.addMouseListener(new SessionTableMouseListener(SESSION_TABLE));
 
@@ -124,7 +108,7 @@ public class TutorThing {
             this.addWindowListener(new CloseWindowListener());
 
             // Layout
-            this.setLayout(new BorderLayout());
+            this.setLayout(new BorderLayout());          
 
             buildPanels();
             this.add(buttonPanel, BorderLayout.EAST);
@@ -136,59 +120,71 @@ public class TutorThing {
 
             //To adjust the size of the text area when the frame size is adjusted
             //this.addComponentListener(new JFrameComponentAdaptor());            
+
             //make it visable to the user
             this.setVisible(true);
+
         }
 
-        private void buildJTable() {
+        private void buildJTable() {            
             //Scroll Pane            
             scrollPane = new JScrollPane(SESSION_TABLE);
-
+            
             this.add(this.scrollPane, BorderLayout.CENTER);
-            this.scrollPane.setAutoscrolls(true);
+            this.scrollPane.setAutoscrolls(true);            
             this.scrollPane.setBounds(0, 0, this.getWidth() - SCROLL_PANE_OFFSET_WIDTH, this.getHeight() - SCROLL_PANE_OFFSET_HEIGHT);
             this.scrollPane.setPreferredSize(new Dimension(this.getWidth() - SCROLL_PANE_OFFSET_WIDTH, this.getHeight() - SCROLL_PANE_OFFSET_HEIGHT));
             this.scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-            this.scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+            this.scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);            
         }
-
-        private void buildPanels() {
+        
+        private void buildPanels() {            
             this.buildJTable();
-            //listPanel.add(LIST, BorderLayout.CENTER);
-
-            //Button Panel
+            
             this.buttonPanel.setPreferredSize(new Dimension(this.getWidth() - BUTTON_PANEL_OFFSET_WIDTH, this.getHeight()));
             this.buttonPanel.setBounds(0, 0, this.getWidth() - BUTTON_PANEL_OFFSET_WIDTH, this.getHeight());
-            this.buttonPanel.setLayout(new GridLayout(10, 2, 30, 10));
 
-            this.buttonPanel.add(this.fLabel);
+            this.buttonPanel.add(this.fLabel, BorderLayout.WEST);
             this.fName.setColumns(COL_WIDTH);
-            this.buttonPanel.add(this.fName);
+            this.buttonPanel.add(this.fName, BorderLayout.EAST);
 
-            this.buttonPanel.add(this.lLabel);
+            this.buttonPanel.add(this.lLabel, BorderLayout.WEST);
             this.lName.setColumns(COL_WIDTH);
-            this.buttonPanel.add(this.lName);
+            this.buttonPanel.add(this.lName, BorderLayout.EAST);
 
-            this.buttonPanel.add(this.idLabel);
+            this.buttonPanel.add(this.idLabel, BorderLayout.WEST);
             this.iD.setColumns(COL_WIDTH);
-            this.buttonPanel.add(this.iD);
+            this.buttonPanel.add(this.iD, BorderLayout.EAST);
 
-            this.buttonPanel.add(this.courseLabel);
+            this.buttonPanel.add(this.courseLabel, BorderLayout.WEST);
             this.course.setColumns(COL_WIDTH);
-            this.buttonPanel.add(this.course);
+            this.buttonPanel.add(this.course, BorderLayout.EAST);
 
-            this.buttonPanel.add(this.instructorLabel);
+            this.buttonPanel.add(this.instructorLabel, BorderLayout.WEST);
             this.instructor.setColumns(COL_WIDTH);
-            this.buttonPanel.add(this.instructor);
+            this.buttonPanel.add(this.instructor, BorderLayout.EAST);
 
-            this.buttonPanel.add(this.tutorLabel);
+            this.buttonPanel.add(this.tutorLabel, BorderLayout.WEST);
             this.tutor.setColumns(COL_WIDTH);
-            this.buttonPanel.add(this.tutor);
+            this.buttonPanel.add(this.tutor, BorderLayout.EAST);
 
             this.ADD_BUTTON.addActionListener(new AddButtonListener());
             buttonPanel.add(ADD_BUTTON, BorderLayout.SOUTH);
-        }
+        }      
 
+        /*
+         private class ClockListener implements ActionListener {
+
+         private int count;
+
+         @Override
+         public void actionPerformed(ActionEvent e) {
+         count %= N;
+         tf.setText(String.valueOf(count));
+         count++;
+         }
+         }
+         */
         /**
          * This class allows us to listen to button events - primarily when it's
          * pressed.
@@ -253,57 +249,14 @@ public class TutorThing {
             }
         }
 
-        private void makeMenuBar() {
-            //Make menu bar
-            this.menuBar = new JMenuBar();
-            this.menu = new JMenu("File");
-            this.setJMenuBar(menuBar);
-            this.menuBar.add(this.menu);
-
-            //Make MenuItems
-            this.newItem = new JMenuItem("New");
-            this.openItem = new JMenuItem("Open");
-            this.saveItem = new JMenuItem("Export");
-            this.saveAsItem = new JMenuItem("Export as");
-            this.exitItem = new JMenuItem("Exit");
-
-            //Make MenuItems Accelerators
-            this.newItem.setAccelerator(KeyStroke.getKeyStroke('N', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(), true));
-            this.openItem.setAccelerator(KeyStroke.getKeyStroke('O', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(), true));
-            this.saveItem.setAccelerator(KeyStroke.getKeyStroke('S', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(), true));
-            this.saveAsItem.setAccelerator(KeyStroke.getKeyStroke('S', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() + InputEvent.SHIFT_DOWN_MASK, true));
-
-            //Make MenuItems Mnemonic
-            this.newItem.setMnemonic('N');
-            this.openItem.setMnemonic('O');
-            this.saveItem.setMnemonic('S');
-            this.saveAsItem.setMnemonic('A');
-            this.exitItem.setMnemonic('X');
-
-            //Register Listeners to menuItems
-            this.newItem.addActionListener(new NewDocumentListener());
-            this.openItem.addActionListener(new OpenDocumentListener());
-            this.saveItem.addActionListener(new ExportListener());
-            this.saveAsItem.addActionListener(new ExportAsDocumentListener());
-            this.exitItem.addActionListener(new ExitListener());
-
-            //Add to Menu
-            this.menu.add(this.newItem);
-            this.menu.add(this.openItem);
-            this.menu.add(this.saveItem);
-            this.menu.add(this.saveAsItem);
-            this.menu.add(this.exitItem);
-
-        }
-
         /**
          * Purpose of this class is to draw a in a cell when called button.
          */
-        private class ComponentRenderer implements TableCellRenderer {
+        private class JTableButtonRenderer implements TableCellRenderer {
 
-            private final TableCellRenderer defaultRenderer;
+            private TableCellRenderer defaultRenderer;
 
-            public ComponentRenderer(TableCellRenderer renderer) {
+            public JTableButtonRenderer(TableCellRenderer renderer) {
                 defaultRenderer = renderer;
             }
 
@@ -317,12 +270,12 @@ public class TutorThing {
             }
         } // end JTableButtonRenderer
 
-        class SessionTableModel extends AbstractTableModel {
+        static class JTableButtonModel extends AbstractTableModel {
 
-            protected Vector sessionRow = new Vector();
-            protected Vector columnNames = new Vector();
+            protected  Vector sessionRow = new Vector();
+            protected  Vector columnNames = new Vector();
 
-            protected void generateData() {
+            protected void generateData() {                
                 columnNames.add("First Name");
                 columnNames.add("Last Name");
                 columnNames.add("ID");
@@ -331,37 +284,13 @@ public class TutorThing {
                 columnNames.add("Tutor");
                 columnNames.add("Elapsed Time");
                 columnNames.add("Start");
-                columnNames.add("Stop");
-                /*
-                 JLabel timeLabel = new JLabel("0");
-                 int seconds = 0;                                        
-                    
-                 sessionRow.add("test");
-                 sessionRow.add("test");
-                 sessionRow.add("test");
-                 sessionRow.add("test");
-                 sessionRow.add("test");
-                 sessionRow.add("test");
-                 sessionRow.add(timeLabel);
-                 sessionRow.add(new JButton("Re/Start"));
-                 sessionRow.add(new JButton("Stop"));
-                 //System.out.println("listener " + sessionTableModel.sessionRow); // debugging aid
-                    
-                 Timer timer = new Timer(seconds, new TimerListener());
-                 //timer.setCoalesce(false);
-                 //timer.
-                 //timer.isRepeats(false)
-                 //timer.setRepeats(false);
-                 timer.setDelay(1000);
-                 timer.start();
-                 */
+                columnNames.add("Stop");                
             }
 
             public void addData(Object o) {
                 sessionRow.add(o);
                 this.fireTableRowsInserted(0, this.getRowCount());
-                //System.out.println("here");
-                // System.out.println("class " + sessionRow); // debugging aid
+                System.out.println("class " + sessionRow);
             }
 
             @Override
@@ -370,12 +299,12 @@ public class TutorThing {
             }
 
             @Override
-            public int getRowCount() {
-                return sessionRow.size() / columnNames.size();
+            public int getRowCount() {                
+                    return sessionRow.size() / columnNames.size();                               
             }
 
             @Override
-            public int getColumnCount() {
+            public int getColumnCount() {                
                 return columnNames.size();
             }
 
@@ -396,33 +325,6 @@ public class TutorThing {
             }
         }
 
-        private class TimerListener implements ActionListener {
-
-            int colValue = 0;
-            final int row = sessionTableModel.getRowCount() - 1;
-
-            private void getTimePanelPos() {
-                // local variable to avoid global changes                
-                for (; colValue < sessionTableModel.getColumnCount(); colValue++) {
-                    // increment colValue if the column doesn't hold a JLabel
-                    if (sessionTableModel.getValueAt(row, colValue) instanceof JLabel) {
-                        return;
-                    }
-                }
-            }
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                getTimePanelPos();
-                JLabel timeLabel = (JLabel) sessionTableModel.getValueAt(row, colValue);
-                int t = Integer.parseInt(timeLabel.getText());
-                timeLabel.setText((t + 1) + "");
-                repaint();
-               // System.out.println("inner from: " + e.getSource());
-            }
-
-        }
-
         private class AddButtonListener implements ActionListener {
 
             @Override
@@ -434,73 +336,33 @@ public class TutorThing {
                         || INSTANCE.instructor.getText().isEmpty()
                         || INSTANCE.tutor.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(null, "A Field is Missing Information", "Error", JOptionPane.ERROR_MESSAGE);
-                } else {
-                    JLabel timeLabel = new JLabel("0");
-                    JButton startButton = new JButton("Start");
-                    JButton stopButton = new JButton("Stop");
+                } else {                    
+                    // Timer newTimer = SESSION_TIMER.get(sessionTableModel.getRowCount() - 1);// = new Timer(0, null);
+                    // newTimer = new Timer(0, null);
                     int seconds = 0;
-
-                    System.out.println("outer from: " + e.getSource());
-
+                    
                     sessionTableModel.addData(INSTANCE.fName.getText().trim());
                     sessionTableModel.addData(INSTANCE.lName.getText().trim());
                     sessionTableModel.addData(INSTANCE.iD.getText().trim());
                     sessionTableModel.addData(INSTANCE.course.getText().trim());
                     sessionTableModel.addData(INSTANCE.instructor.getText().trim());
                     sessionTableModel.addData(INSTANCE.tutor.getText().trim());
-                    sessionTableModel.addData(timeLabel);
-                    sessionTableModel.addData(startButton);
-                    sessionTableModel.addData(stopButton);
-                    JButton b = new JButton();
-                    stopButton.addActionListener(new stopButtonListener());
-                    //System.out.println("listener " + sessionTableModel.sessionRow); // debugging aid
-
-                    Timer timer = new Timer(seconds, new TimerListener());
-
-                    // start time
-                    timer.setDelay(1000);
-                    timer.start();
-
+                    sessionTableModel.addData(new Timer(0, null));
+                    sessionTableModel.addData(new JButton("Re/Start"));
+                    sessionTableModel.addData(new JButton("Stop"));
+                    System.out.println("listener " + sessionTableModel.sessionRow);
+                    
                     // Reset TextFields
                     INSTANCE.fName.setText("");
                     INSTANCE.lName.setText("");
                     INSTANCE.iD.setText("");
                     INSTANCE.course.setText("");
                     INSTANCE.instructor.setText("");
-                    INSTANCE.tutor.setText("");
+                    INSTANCE.tutor.setText("");                    
                 }
             }
 
         }// end AddButtonListener
-
-        private class stopButtonListener implements ActionListener {
-
-            int colValue = 0;
-            final int row = sessionTableModel.getRowCount() - 1;
-
-            private void getStopPos() {
-                // local variable to avoid global changes                
-                for (; colValue < sessionTableModel.getColumnCount(); colValue++) {
-                    // increment colValue if the column doesn't hold a JLabel
-                    if (sessionTableModel.getValueAt(row, colValue) instanceof JLabel) {
-                        return;
-                    }
-                }
-            }
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                getStopPos();
-                JButton stopButton = (JButton) sessionTableModel.getValueAt(row, colValue);
-
-                System.out.println(stopButton.getActionListeners());
-                //int t = Integer.parseInt(timeLabel.getText());
-                //timeLabel.setText((t + 1) + "");
-                //repaint();
-                //System.out.println("inner from: " + e.getSource());
-            }
-
-        }
 
         private class RemoveButtonListener implements ActionListener {
 
@@ -521,9 +383,6 @@ public class TutorThing {
 
         private void saveData() {
             try {
-                if (!this.file.getName().toUpperCase().endsWith(INSTANCE.FILE_EXTENSION)) {
-                    this.file = new File(this.file + INSTANCE.FILE_EXTENSION);
-                }
                 out = new PrintStream(this.file);
                 /*
                  for (Session s : this.sessionListModel) {
@@ -553,7 +412,7 @@ public class TutorThing {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (INSTANCE.file == null) {
-                    //INSTANCE.saveDialog();
+                    INSTANCE.saveDialog();
                 } else {
                     INSTANCE.saveData();
                 }
@@ -564,31 +423,11 @@ public class TutorThing {
         /**
          * If the user has not saved the new file before this method will open
          * up a file explorer to ask the user where to save the file
-         *//*
+         */
         private void saveDialog() {
             JFileChooser chooser = new JFileChooser();
-            FileFilter ff = new FileFilter() {
-
-                3
-
-         @Override
-                public boolean accept(File f) {
-                    // TODO Auto-generated method stub
-                    return f.getName().endsWith(FILE_EXTENSION);
-                }
-
-                @Override
-                public String getDescription() {
-                    return "CSV";
-                }
-
-            };
-            chooser.addChoosableFileFilter(ff);
-            chooser.setAcceptAllFileFilterUsed(true);
-            chooser.setFileFilter(ff);
             chooser.showSaveDialog(null);
             this.file = chooser.getSelectedFile();
-            //this.file =  new File(chooser.getSelectedFile().getName() + INSTANCE.FILE_EXTENSION);
 
             try {
 
@@ -603,7 +442,6 @@ public class TutorThing {
             }
 
         }
-        */
 
         /**
          * The ending action method will check if there is any unsaved changes
@@ -648,7 +486,7 @@ public class TutorThing {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                //INSTANCE.saveDialog();
+                INSTANCE.saveDialog();
             }
 
         }
@@ -707,34 +545,6 @@ public class TutorThing {
         }
 
     }
-
-    /**
-     * TODO
-     */
-    private static class NewDocumentListener implements ActionListener {
-
-        public NewDocumentListener() {
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent ae) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-    }
-
-    /**
-     * TODO
-     */
-    private static class OpenDocumentListener implements ActionListener {
-
-        public OpenDocumentListener() {
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent ae) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-    }
 }
 
 class Session {
@@ -758,8 +568,7 @@ class Session {
 
     @Override
     public String toString() {
-        DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
-        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-        return dateFormat.format(new Date(this.start)) + "," + this.lName + "," + this.fName + "," + this.iD + "," + this.course + "," + this.instructor + "," + this.tutor + "," + timeFormat.format(new Date(this.start)) + "," + this.end;
+        return this.lName + "," + this.fName + "," + this.iD + "," + this.course + "," + this.instructor + "," + this.tutor + "," + this.start + "," + this.end;
     }
+
 }
