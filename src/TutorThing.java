@@ -11,6 +11,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Vector;
 import javax.swing.table.*;
+import javax.swing.filechooser.FileFilter;
 // import java.*; // you know you want to p.s. i think i got rid of a few imports by accident
 
 /**
@@ -253,48 +254,51 @@ public class TutorThing {
             }
         }
 
-        private void makeMenuBar() {
+        private void makeMenuBar()
+        {
             //Make menu bar
             this.menuBar = new JMenuBar();
             this.menu = new JMenu("File");
             this.setJMenuBar(menuBar);
             this.menuBar.add(this.menu);
-
+            
             //Make MenuItems
             this.newItem = new JMenuItem("New");
             this.openItem = new JMenuItem("Open");
             this.saveItem = new JMenuItem("Export");
             this.saveAsItem = new JMenuItem("Export as");
             this.exitItem = new JMenuItem("Exit");
-
+            
+            
             //Make MenuItems Accelerators
-            this.newItem.setAccelerator(KeyStroke.getKeyStroke('N', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(), true));
-            this.openItem.setAccelerator(KeyStroke.getKeyStroke('O', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(), true));
-            this.saveItem.setAccelerator(KeyStroke.getKeyStroke('S', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(), true));
-            this.saveAsItem.setAccelerator(KeyStroke.getKeyStroke('S', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() + InputEvent.SHIFT_DOWN_MASK, true));
-
+            this.newItem.setAccelerator(KeyStroke.getKeyStroke('N',Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(),true));
+            this.openItem.setAccelerator(KeyStroke.getKeyStroke('O',Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(),true));
+            this.saveItem.setAccelerator(KeyStroke.getKeyStroke('S',Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(),true));
+            this.saveAsItem.setAccelerator(KeyStroke.getKeyStroke('S',Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() + InputEvent.SHIFT_DOWN_MASK,true));
+            
             //Make MenuItems Mnemonic
             this.newItem.setMnemonic('N');
             this.openItem.setMnemonic('O');
             this.saveItem.setMnemonic('S');
             this.saveAsItem.setMnemonic('A');
             this.exitItem.setMnemonic('X');
-
+            
             //Register Listeners to menuItems
-            this.newItem.addActionListener(new NewDocumentListener());
-            this.openItem.addActionListener(new OpenDocumentListener());
+            //this.newItem.addActionListener(new NewDocumentListener());
+            //this.openItem.addActionListener(new OpenDocumentListener());
             this.saveItem.addActionListener(new ExportListener());
             this.saveAsItem.addActionListener(new ExportAsDocumentListener());
             this.exitItem.addActionListener(new ExitListener());
-
+            
             //Add to Menu
             this.menu.add(this.newItem);
             this.menu.add(this.openItem);
             this.menu.add(this.saveItem);
             this.menu.add(this.saveAsItem);
             this.menu.add(this.exitItem);
-
+            
         }
+
 
         /**
          * Purpose of this class is to draw a in a cell when called button.
@@ -521,9 +525,6 @@ public class TutorThing {
 
         private void saveData() {
             try {
-                if (!this.file.getName().toUpperCase().endsWith(INSTANCE.FILE_EXTENSION)) {
-                    this.file = new File(this.file + INSTANCE.FILE_EXTENSION);
-                }
                 out = new PrintStream(this.file);
                 /*
                  for (Session s : this.sessionListModel) {
@@ -553,7 +554,7 @@ public class TutorThing {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (INSTANCE.file == null) {
-                    //INSTANCE.saveDialog();
+                    INSTANCE.saveDialog();
                 } else {
                     INSTANCE.saveData();
                 }
@@ -564,31 +565,31 @@ public class TutorThing {
         /**
          * If the user has not saved the new file before this method will open
          * up a file explorer to ask the user where to save the file
-         *//*
+         */
         private void saveDialog() {
             JFileChooser chooser = new JFileChooser();
-            FileFilter ff = new FileFilter() {
+            
+            FileFilter ff =  new FileFilter() {
 
-                3
+        @Override
+        public boolean accept(File f) {
+            // TODO Auto-generated method stub
+            return f.getName().endsWith(FILE_EXTENSION);
+        }
 
-         @Override
-                public boolean accept(File f) {
-                    // TODO Auto-generated method stub
-                    return f.getName().endsWith(FILE_EXTENSION);
-                }
+        @Override
+        public String getDescription() {
+            return "CSV";
+        }
 
-                @Override
-                public String getDescription() {
-                    return "CSV";
-                }
-
-            };
-            chooser.addChoosableFileFilter(ff);
-            chooser.setAcceptAllFileFilterUsed(true);
-            chooser.setFileFilter(ff);
+    };
+                    chooser.addChoosableFileFilter(ff);
+                    chooser.setAcceptAllFileFilterUsed(true);
+                    chooser.setFileFilter(ff);
             chooser.showSaveDialog(null);
-            this.file = chooser.getSelectedFile();
+            this.file =  chooser.getSelectedFile();
             //this.file =  new File(chooser.getSelectedFile().getName() + INSTANCE.FILE_EXTENSION);
+
 
             try {
 
@@ -603,7 +604,6 @@ public class TutorThing {
             }
 
         }
-        */
 
         /**
          * The ending action method will check if there is any unsaved changes
@@ -648,7 +648,7 @@ public class TutorThing {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                //INSTANCE.saveDialog();
+                INSTANCE.saveDialog();
             }
 
         }
@@ -707,34 +707,6 @@ public class TutorThing {
         }
 
     }
-
-    /**
-     * TODO
-     */
-    private static class NewDocumentListener implements ActionListener {
-
-        public NewDocumentListener() {
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent ae) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-    }
-
-    /**
-     * TODO
-     */
-    private static class OpenDocumentListener implements ActionListener {
-
-        public OpenDocumentListener() {
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent ae) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-    }
 }
 
 class Session {
@@ -750,7 +722,6 @@ class Session {
         this.course = course;
         this.instructor = instructor;
         this.tutor = tutor;
-        //
     }
 
     public long calcTime() {
@@ -759,8 +730,7 @@ class Session {
 
     @Override
     public String toString() {
-        DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
-        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-        return dateFormat.format(new Date(this.start)) + "," + this.lName + "," + this.fName + "," + this.iD + "," + this.course + "," + this.instructor + "," + this.tutor + "," + timeFormat.format(new Date(this.start)) + "," + this.end;
+        return this.lName + "," + this.fName + "," + this.iD + "," + this.course + "," + this.instructor + "," + this.tutor + "," + this.start + "," + this.end;
     }
+
 }
