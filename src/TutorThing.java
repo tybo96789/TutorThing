@@ -557,7 +557,7 @@ public class TutorThing {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (INSTANCE.file == null) {
-                    //INSTANCE.saveDialog();
+                    INSTANCE.saveDialog();
                 } else {
                     INSTANCE.saveData();
                 }
@@ -568,7 +568,7 @@ public class TutorThing {
         /**
          * If the user has not saved the new file before this method will open
          * up a file explorer to ask the user where to save the file
-         *//*
+         */
         private void saveDialog() {
             JFileChooser chooser = new JFileChooser();
             
@@ -607,7 +607,7 @@ public class TutorThing {
             }
 
         }
-        */
+        
 
         /**
          * The ending action method will check if there is any unsaved changes
@@ -652,7 +652,7 @@ public class TutorThing {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                //INSTANCE.saveDialog();
+                INSTANCE.saveDialog();
             }
 
         }
