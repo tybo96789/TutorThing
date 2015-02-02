@@ -750,7 +750,6 @@ class Session {
         this.course = course;
         this.instructor = instructor;
         this.tutor = tutor;
-        //
     }
 
     public long calcTime() {
