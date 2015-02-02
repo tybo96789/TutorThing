@@ -43,6 +43,9 @@ Temporary Items
 .apdisk
 /build/
 
-#STuff i need to block
+#stuff i added
 .properties
+/dist/
 *.properties
+*.xml
+*.xml

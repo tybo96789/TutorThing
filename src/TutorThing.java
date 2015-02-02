@@ -236,6 +236,7 @@ public class TutorThing {
 
         }
 
+
         /**
          * This class allows us to listen to button events - primarily when it's
          * pressed.
@@ -310,6 +311,7 @@ public class TutorThing {
                 this.forwardEventToButton(e);
             }
         }
+       
 
         /**
          * Purpose of this class is to draw a in a cell when called button.
@@ -433,7 +435,7 @@ public class TutorThing {
                 int t = Integer.parseInt(timeLabel.getText());
                 timeLabel.setText((t + 1) + "");
                 repaint();
-                // System.out.println("inner from: " + e.getSource());
+               // System.out.println("inner from: " + e.getSource());
             }
 
         }
