@@ -57,7 +57,6 @@ public class TutorThing {
         private JLabel instructorLabel = new JLabel("Instructor");
         private JLabel tutorLabel = new JLabel("Tutor");
         private JLabel startTime = new JLabel("Start Time");
-        private JLabel export = new JLabel("Export");
 
         //JTextFields
         private final int COL_WIDTH = 30;
@@ -76,7 +75,6 @@ public class TutorThing {
         //private final JButton REMOVE_BUTTON = new JButton("REMOVE");
         private final JButton CLEAR_BUTTON = new JButton("CLEAR");
         private final ArrayList<JButton> REMOVE_BUTTON = new ArrayList();
-        private final JButton EXPORT_BUTTON = new JButton("Export");
 
         // JMenu (to be added) 
         private JMenu menu = new JMenu();
@@ -192,10 +190,7 @@ public class TutorThing {
             this.buttonPanel.add(this.tutor);
 
             this.ADD_BUTTON.addActionListener(new AddButtonListener());
-            buttonPanel.add(ADD_BUTTON);
-            
-            this.EXPORT_BUTTON.addActionListener(new ExportListener());
-            this.buttonPanel.add(this.EXPORT_BUTTON);
+            buttonPanel.add(ADD_BUTTON, BorderLayout.SOUTH);
         }
 
         private void makeMenuBar() {
