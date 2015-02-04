@@ -39,16 +39,23 @@ public class TutorThing {
         private final String TITLE = "Tutoring Management Program";
         private final int INITAL_WIDTH = 1200, INITAL_HEIGHT = 800;
         private final TutorManagement INSTANCE = this;
-
+        
         // Panel Stuff
         private Container listContainer = new Container();
         private Container buttonContainer = new Container();
-        private JPanel panel = new JPanel();
-
+        
+        private JTabbedPane tabbedPane = new JTabbedPane();
+        
         private final int SCROLL_PANE_OFFSET_WIDTH = 0, SCROLL_PANE_OFFSET_HEIGHT = 0;
 
         private JPanel buttonPanel = new JPanel();
-        private final int BUTTON_PANEL_OFFSET_WIDTH = 800;
+        private final int BUTTON_PANEL_OFFSET_WIDTH = 800, BUTTON_PANEL_OFFSET_HEIGHT = 200;
+        private JPanel auxPanel = new JPanel();
+        
+        private JScrollPane sessionPane;
+        private JScrollPane appointmentPane;
+        
+        
 
         //JLabels
         private JLabel fLabel = new JLabel("First Name");
@@ -58,6 +65,8 @@ public class TutorThing {
         private JLabel instructorLabel = new JLabel("Instructor");
         private JLabel tutorLabel = new JLabel("Tutor");
         private JLabel startTime = new JLabel("Start Time");
+        
+        private JLabel auxLabel = new JLabel("Aux Info");
 
         //JTextFields
         private final int COL_WIDTH = 30;
@@ -100,10 +109,13 @@ public class TutorThing {
         private boolean isModifed = false;
 
         private final JTable SESSION_TABLE;
-        private JScrollPane scrollPane;
+        
         SessionTableModel sessionTableModel = new SessionTableModel();
 
         public TutorManagement() {
+            //this.setIconImage(new ImageIcon("Sample.png").getImage());
+           
+
             // draws components onto the table
             TableCellRenderer buttonRenderer;
             TableCellRenderer labelRenderer;
@@ -149,14 +161,15 @@ public class TutorThing {
 
         private void buildJTable() {
             //Scroll Pane            
-            scrollPane = new JScrollPane(SESSION_TABLE);
-
-            this.add(this.scrollPane, BorderLayout.CENTER);
-            this.scrollPane.setAutoscrolls(true);
-            this.scrollPane.setBounds(0, 0, this.getWidth() - SCROLL_PANE_OFFSET_WIDTH, this.getHeight() - SCROLL_PANE_OFFSET_HEIGHT);
-            this.scrollPane.setPreferredSize(new Dimension(this.getWidth() - SCROLL_PANE_OFFSET_WIDTH, this.getHeight() - SCROLL_PANE_OFFSET_HEIGHT));
-            this.scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-            this.scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+            sessionPane = new JScrollPane(SESSION_TABLE);
+            
+            this.add(this.tabbedPane);
+            this.tabbedPane.addTab("Sessions",this.sessionPane);
+            this.sessionPane.setAutoscrolls(true);
+            this.sessionPane.setBounds(0, 0, this.getWidth() - SCROLL_PANE_OFFSET_WIDTH, this.getHeight() - SCROLL_PANE_OFFSET_HEIGHT);
+            this.sessionPane.setPreferredSize(new Dimension(this.getWidth() - SCROLL_PANE_OFFSET_WIDTH, this.getHeight() - SCROLL_PANE_OFFSET_HEIGHT));
+            this.sessionPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+            this.sessionPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
         }
 
         private void buildPanels() {
@@ -164,8 +177,8 @@ public class TutorThing {
             //listPanel.add(LIST, BorderLayout.CENTER);
 
             //Button Panel
-            this.buttonPanel.setPreferredSize(new Dimension(this.getWidth() - BUTTON_PANEL_OFFSET_WIDTH, this.getHeight()));
-            this.buttonPanel.setBounds(0, 0, this.getWidth() - BUTTON_PANEL_OFFSET_WIDTH, this.getHeight());
+            this.buttonPanel.setPreferredSize(new Dimension(this.getWidth() - BUTTON_PANEL_OFFSET_WIDTH, this.getHeight()-this.BUTTON_PANEL_OFFSET_HEIGHT));
+            this.buttonPanel.setBounds(0, 0, this.getWidth() - BUTTON_PANEL_OFFSET_WIDTH, this.getHeight()- this.BUTTON_PANEL_OFFSET_HEIGHT);
             this.buttonPanel.setLayout(new GridLayout(10, 2, 30, 10));
 
             this.buttonPanel.add(this.fLabel);
@@ -196,6 +209,24 @@ public class TutorThing {
             this.EXPORT_BUTTON.addActionListener(new ExportListener());
             buttonPanel.add(ADD_BUTTON, BorderLayout.SOUTH);
             this.buttonPanel.add(this.EXPORT_BUTTON);
+            
+            //this.auxPanel.setPreferredSize(new Dimension(Math.abs( BUTTON_PANEL_OFFSET_WIDTH - this.getWidth()), Math.abs( BUTTON_PANEL_OFFSET_HEIGHT - this.getHeight())));
+            //this.auxPanel.add(this.auxLabel);
+            //this.add(this.auxPanel);
+            
+            this.makeAppointmentPanel();
+        }
+        
+        private void makeAppointmentPanel()
+        {
+            this.appointmentPane = new JScrollPane();
+            
+            this.tabbedPane.addTab("Appointments",this.appointmentPane);
+            this.appointmentPane.setAutoscrolls(true);
+            this.appointmentPane.setBounds(0, 0, this.getWidth() - SCROLL_PANE_OFFSET_WIDTH, this.getHeight() - SCROLL_PANE_OFFSET_HEIGHT);
+            this.appointmentPane.setPreferredSize(new Dimension(this.getWidth() - SCROLL_PANE_OFFSET_WIDTH, this.getHeight() - SCROLL_PANE_OFFSET_HEIGHT));
+            this.appointmentPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+            this.appointmentPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
         }
 
         private void makeMenuBar() {
