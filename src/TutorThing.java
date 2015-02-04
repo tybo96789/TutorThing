@@ -491,16 +491,20 @@ public class TutorThing {
                         || INSTANCE.instructor.getText().isEmpty()
                         || INSTANCE.tutor.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(null, "A Field is Missing Information", "Error", JOptionPane.ERROR_MESSAGE);
-                } else {
+                } else if(!INSTANCE.iD.getText().matches("@?[0-9]{8}")) JOptionPane.showMessageDialog(null, "ID is invalid", "Error", JOptionPane.ERROR_MESSAGE);
+                else {
                     JLabel timeLabel = new JLabel("00:00");
                     JButton startButton = new JButton("Start");
                     JButton stopButton = new JButton("Stop");
                     int seconds = 0;
-
+                        
                     // System.out.println("outer from: " + e.getSource()); // debugging aid
                     sessionTableModel.addData(INSTANCE.fName.getText().trim());
                     sessionTableModel.addData(INSTANCE.lName.getText().trim());
-                    sessionTableModel.addData(INSTANCE.iD.getText().trim());
+                    if(!INSTANCE.iD.getText().matches("@?[0-9]{8}"))
+                        sessionTableModel.addData("@" + INSTANCE.iD.getText().trim());
+                    else
+                        sessionTableModel.addData(INSTANCE.iD.getText().trim());
                     sessionTableModel.addData(INSTANCE.course.getText().trim());
                     sessionTableModel.addData(INSTANCE.instructor.getText().trim());
                     sessionTableModel.addData(INSTANCE.tutor.getText().trim());
