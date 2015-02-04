@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 /**
  *
  * @author Tyler Atiburcio, Lawrence Ruffin
- * @version 1
+ * @version 1-ALPHA
  */
 public class TutorThing {
 
@@ -109,27 +109,32 @@ public class TutorThing {
         private boolean isModifed = false;
 
         private final JTable SESSION_TABLE;
+        private final JTable APPOINTMENT_TABLE;
         
         SessionTableModel sessionTableModel = new SessionTableModel();
+        AppointmentTableModel appointmentTableModel = new AppointmentTableModel();
+        
 
         public TutorManagement() {
             //this.setIconImage(new ImageIcon("Sample.png").getImage());
            
 
             // draws components onto the table
-            TableCellRenderer buttonRenderer;
-            TableCellRenderer labelRenderer;
+            TableCellRenderer sessionButtonRenderer;
+            TableCellRenderer sessionLabelRenderer;
 
             sessionTableModel.generateData();
+            this.appointmentTableModel.generateData();
             SESSION_TABLE = new JTable(sessionTableModel);
+            this.APPOINTMENT_TABLE= new JTable(this.appointmentTableModel);
 
-            buttonRenderer = SESSION_TABLE.getDefaultRenderer(JButton.class);
-            labelRenderer = SESSION_TABLE.getDefaultRenderer(JLabel.class);
+            sessionButtonRenderer = SESSION_TABLE.getDefaultRenderer(JButton.class);
+            sessionLabelRenderer = SESSION_TABLE.getDefaultRenderer(JLabel.class);
 
             SESSION_TABLE.setDefaultRenderer(JButton.class,
-                    new ComponentRenderer(buttonRenderer));
+                    new ComponentRenderer(sessionButtonRenderer));
             SESSION_TABLE.setDefaultRenderer(JLabel.class,
-                    new ComponentRenderer(labelRenderer));
+                    new ComponentRenderer(sessionLabelRenderer));
 
             // Adjusts SESSION_TABLE
             SESSION_TABLE.setPreferredScrollableViewportSize(new Dimension(400, 200));
@@ -174,8 +179,12 @@ public class TutorThing {
 
         private void buildPanels() {
             this.buildJTable();
-            //listPanel.add(LIST, BorderLayout.CENTER);
-
+            this.makeButtonPanel();
+            this.makeAppointmentPanel();
+        }
+        
+        private void makeButtonPanel()
+        {
             //Button Panel
             this.buttonPanel.setPreferredSize(new Dimension(this.getWidth() - BUTTON_PANEL_OFFSET_WIDTH, this.getHeight()-this.BUTTON_PANEL_OFFSET_HEIGHT));
             this.buttonPanel.setBounds(0, 0, this.getWidth() - BUTTON_PANEL_OFFSET_WIDTH, this.getHeight()- this.BUTTON_PANEL_OFFSET_HEIGHT);
@@ -209,17 +218,11 @@ public class TutorThing {
             this.EXPORT_BUTTON.addActionListener(new ExportListener());
             buttonPanel.add(ADD_BUTTON, BorderLayout.SOUTH);
             this.buttonPanel.add(this.EXPORT_BUTTON);
-            
-            //this.auxPanel.setPreferredSize(new Dimension(Math.abs( BUTTON_PANEL_OFFSET_WIDTH - this.getWidth()), Math.abs( BUTTON_PANEL_OFFSET_HEIGHT - this.getHeight())));
-            //this.auxPanel.add(this.auxLabel);
-            //this.add(this.auxPanel);
-            
-            this.makeAppointmentPanel();
         }
         
         private void makeAppointmentPanel()
         {
-            this.appointmentPane = new JScrollPane();
+            this.appointmentPane = new JScrollPane(this.APPOINTMENT_TABLE);
             
             this.tabbedPane.addTab("Appointments",this.appointmentPane);
             this.appointmentPane.setAutoscrolls(true);
@@ -410,6 +413,61 @@ public class TutorThing {
                  timer.setDelay(1000);
                  timer.start();
                  */
+            }
+
+            public void addData(Object o) {
+                sessionRow.add(o);
+                this.fireTableRowsInserted(0, this.getRowCount());
+                //System.out.println("here");
+                // System.out.println("class " + sessionRow); // debugging aid
+            }
+
+            @Override
+            public String getColumnName(int column) {
+                return columnNames.get(column).toString();
+            }
+
+            @Override
+            public int getRowCount() {
+                return sessionRow.size() / columnNames.size();
+            }
+
+            @Override
+            public int getColumnCount() {
+                return columnNames.size();
+            }
+
+            @Override
+            public Object getValueAt(int row, int column) {
+
+                return sessionRow.get((row * getColumnCount()) + column);
+            }
+
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+
+            @Override
+            public Class getColumnClass(int column) {
+                return getValueAt(0, column).getClass();
+            }
+        }
+        
+        class AppointmentTableModel extends AbstractTableModel {
+
+            protected Vector sessionRow = new Vector();
+            protected Vector columnNames = new Vector();
+
+            protected void generateData() {
+                columnNames.add("First Name");
+                columnNames.add("Last Name");
+                columnNames.add("ID");
+                columnNames.add("Course");
+                columnNames.add("Instructor");
+                columnNames.add("Tutor");
+                columnNames.add("Appointment Time");
+                columnNames.add("Start");
             }
 
             public void addData(Object o) {
