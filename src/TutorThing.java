@@ -65,6 +65,7 @@ public class TutorThing {
         private JLabel instructorLabel = new JLabel("Instructor");
         private JLabel tutorLabel = new JLabel("Tutor");
         private JLabel startTime = new JLabel("Start Time");
+        private JLabel commentsLable = new JLabel("Comments");
         
         private JLabel auxLabel = new JLabel("Aux Info");
 
@@ -76,6 +77,7 @@ public class TutorThing {
         private JTextField course = new JTextField();
         private JTextField instructor = new JTextField();
         private JTextField tutor = new JTextField();
+        private JTextField comments = new JTextField();
 
         // Timers
         private final ArrayList<Timer> TIMERS = new ArrayList();
@@ -213,6 +215,10 @@ public class TutorThing {
             this.buttonPanel.add(this.tutorLabel);
             this.tutor.setColumns(COL_WIDTH);
             this.buttonPanel.add(this.tutor);
+            
+            this.buttonPanel.add(this.commentsLable);
+            this.comments.setColumns(COL_WIDTH);
+            this.buttonPanel.add(this.comments);
 
             this.ADD_BUTTON.addActionListener(new AddButtonListener());
             this.EXPORT_BUTTON.addActionListener(new ExportListener());
@@ -390,6 +396,7 @@ public class TutorThing {
                 columnNames.add("Elapsed Time");
                 columnNames.add("Start");
                 columnNames.add("Stop");
+                columnNames.add("Comments");
                 /*
                  JLabel timeLabel = new JLabel("0");
                  int seconds = 0;                                        
@@ -468,6 +475,7 @@ public class TutorThing {
                 columnNames.add("Tutor");
                 columnNames.add("Appointment Time");
                 columnNames.add("Start");
+                columnNames.add("Comments");
             }
 
             public void addData(Object o) {
@@ -559,7 +567,7 @@ public class TutorThing {
                     // System.out.println("outer from: " + e.getSource()); // debugging aid
                     sessionTableModel.addData(INSTANCE.fName.getText().trim());
                     sessionTableModel.addData(INSTANCE.lName.getText().trim());
-                    if(!INSTANCE.iD.getText().matches("@?[0-9]{8}"))
+                    if(!INSTANCE.iD.getText().matches("@[0-9]{8}"))
                         sessionTableModel.addData("@" + INSTANCE.iD.getText().trim());
                     else
                         sessionTableModel.addData(INSTANCE.iD.getText().trim());
@@ -569,6 +577,7 @@ public class TutorThing {
                     sessionTableModel.addData(timeLabel);
                     sessionTableModel.addData(startButton);
                     sessionTableModel.addData(stopButton);
+                    sessionTableModel.addData(INSTANCE.comments.getText().trim());
                     JButton b = new JButton();
                     stopButton.addActionListener(new stopButtonListener());
                     //System.out.println("listener " + sessionTableModel.sessionRow); // debugging aid
@@ -581,7 +590,8 @@ public class TutorThing {
                      INSTANCE.iD.getText().trim(),
                      INSTANCE.course.getText().trim(),
                      INSTANCE.instructor.getText().trim(),
-                     INSTANCE.tutor.getText().trim()));
+                     INSTANCE.tutor.getText().trim(),
+                     INSTANCE.comments.getText().trim()));
 
                     
                     Timer timer = new Timer(seconds, new TimerListener());
@@ -600,6 +610,7 @@ public class TutorThing {
                     INSTANCE.course.setText("");
                     INSTANCE.instructor.setText("");
                     INSTANCE.tutor.setText("");
+                    INSTANCE.comments.setText("");
                 }
             }
 
@@ -872,9 +883,9 @@ public class TutorThing {
 class Session {
 
     long start, end;
-    String fName, lName, iD, course, instructor, tutor;
+    String fName, lName, iD, course, instructor, tutor, comments;
 
-    public Session(Long start, String fName, String lName, String iD, String course, String instructor, String tutor) {
+    public Session(Long start, String fName, String lName, String iD, String course, String instructor, String tutor, String comments) {
         this.start = start;
         this.fName = fName;
         this.lName = lName;
@@ -882,6 +893,7 @@ class Session {
         this.course = course;
         this.instructor = instructor;
         this.tutor = tutor;
+        this.comments = comments;
     }
 
     public void calcTime() {
@@ -901,6 +913,6 @@ class Session {
     public String toString() {
         DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-        return dateFormat.format(new Date(this.start)) + "," + this.lName + "," + this.fName + "," + this.iD + "," + this.course + "," + this.instructor + "," + this.tutor + "," + timeFormat.format(new Date(this.start)) + "," + timeFormat.format(new Date(this.end)) ;
+        return dateFormat.format(new Date(this.start)) + "," + this.lName + "," + this.fName + "," + this.iD + "," + this.course + "," + this.instructor + "," + this.tutor + "," + timeFormat.format(new Date(this.start)) + "," + timeFormat.format(new Date(this.end) + ","+ this.comments) ;
     }
 }
