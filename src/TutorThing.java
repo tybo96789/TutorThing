@@ -132,7 +132,7 @@ public class TutorThing {
         
 
         public TutorManagement() {
-            this.setIconImage(new ImageIcon("Sample.png").getImage());
+            //this.setIconImage(new ImageIcon("Sample.png").getImage());
            
 
             // draws components onto the table
