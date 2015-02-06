@@ -108,6 +108,7 @@ public class TutorThing {
         private JMenuItem exitItem;
         
         private JMenu advance = new JMenu("Advance");
+        private JMenu debug = new JMenu("Debug");
         private JMenuItem killTimers;
 
         // JList (testing)
@@ -131,7 +132,7 @@ public class TutorThing {
         
 
         public TutorManagement() {
-            //this.setIconImage(new ImageIcon("Sample.png").getImage());
+            this.setIconImage(new ImageIcon("Sample.png").getImage());
            
 
             // draws components onto the table
@@ -144,6 +145,7 @@ public class TutorThing {
             this.SESSION_TABLE.setRowHeight(ROW_HEIGHT);
             this.APPOINTMENT_TABLE= new JTable(this.appointmentTableModel);
             this.APPOINTMENT_TABLE.setRowHeight(ROW_HEIGHT);
+            this.SESSION_TABLE.setEditingColumn(1);
 
             sessionButtonRenderer = SESSION_TABLE.getDefaultRenderer(JButton.class);
             sessionLabelRenderer = SESSION_TABLE.getDefaultRenderer(JLabel.class);
@@ -154,7 +156,7 @@ public class TutorThing {
                     new ComponentRenderer(sessionLabelRenderer));
 
             // Adjusts SESSION_TABLE
-            SESSION_TABLE.setPreferredScrollableViewportSize(new Dimension(400, 200));
+            //SESSION_TABLE.setPreferredScrollableViewportSize(new Dimension(400, 200));
             SESSION_TABLE.addMouseListener(new SessionTableMouseListener(SESSION_TABLE));
 
             //Frame stuff
@@ -284,6 +286,7 @@ public class TutorThing {
             this.setJMenuBar(menuBar);
             this.menuBar.add(this.menu);
             this.menuBar.add(this.advance);
+            this.advance.add(this.debug);
 
             //Make MenuItems
             this.newItem = new JMenuItem("New");
@@ -334,7 +337,7 @@ public class TutorThing {
             this.menu.add(this.saveAsItem);
             this.menu.add(this.exitItem);
             
-            this.advance.add(this.killTimers);
+            this.debug.add(this.killTimers);
 
         }
         
@@ -536,7 +539,7 @@ public class TutorThing {
 
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false;
+                return !(column == 6 || column == 7 || column == 8);
             }
 
             @Override
@@ -592,7 +595,7 @@ public class TutorThing {
 
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false;
+                return !(column==8);
             }
 
             @Override
