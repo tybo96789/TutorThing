@@ -70,7 +70,7 @@ public class TutorThing {
         private JLabel tutorLabel = new JLabel("Tutor");
         private JLabel startTime = new JLabel("Start Time");
         private JLabel commentsLable = new JLabel("Comments");
-        
+        private JLabel appointmentLable = new JLabel("Appointment?");
         private JLabel auxLabel = new JLabel("Aux Info");
 
         //JTextFields
@@ -82,15 +82,18 @@ public class TutorThing {
         private JTextField instructor = new JTextField();
         private JTextField tutor = new JTextField();
         private JTextField comments = new JTextField();
+        
+        //JCheckBox
+        private JCheckBox appointment = new JCheckBox();
 
         // Timers
         private final ArrayList<Timer> TIMERS = new ArrayList();
         private final SimpleDateFormat SDF = new SimpleDateFormat("mm:ss");
 
         // Buttons
-        private final JButton ADD_BUTTON = new JButton("ADD");
+        private final JButton ADD_BUTTON = new JButton("Add");
         //private final JButton REMOVE_BUTTON = new JButton("REMOVE");
-        private final JButton CLEAR_BUTTON = new JButton("CLEAR");
+        private final JButton CLEAR_BUTTON = new JButton("Clear Fields");
         private final ArrayList<JButton> REMOVE_BUTTON = new ArrayList();
         private final JButton EXPORT_BUTTON = new JButton("Export");
 
@@ -196,10 +199,12 @@ public class TutorThing {
             this.makeAppointmentPanel();
             this.sessionPanel.add(new JLabel("Current Sessions",JLabel.CENTER));
             this.sessionPanel.add(this.sessionPane);
-            this.appointmentPanel.add(new JLabel("Appointments",JLabel.CENTER));
-            this.appointmentPanel.add(this.appointmentPane);
-            
-            
+            //this.appointmentPanel.add(new JLabel("Appointments",JLabel.CENTER));
+            this.appointmentPanel.add(this.tabbedPane);
+            this.tabbedPane.addTab("Appointments", this.appointmentPane);
+            this.tabbedPane.addTab("Completed Sessions", new JLabel("HI"));
+            this.ADD_BUTTON.setForeground(Color.BLUE);
+            this.makeClearField();
         }
         
         private void makeButtonPanel()
@@ -238,11 +243,13 @@ public class TutorThing {
             this.buttonPanel.add(this.commentsLable);
             this.comments.setColumns(COL_WIDTH);
             this.buttonPanel.add(this.comments);
+            
+            this.buttonPanel.add(this.appointmentLable);
+            this.buttonPanel.add(this.appointment);
 
             this.ADD_BUTTON.addActionListener(new AddButtonListener());
-            this.EXPORT_BUTTON.addActionListener(new ExportListener());
-            buttonPanel.add(ADD_BUTTON, BorderLayout.SOUTH);
-            this.buttonPanel.add(this.EXPORT_BUTTON);
+            //buttonPanel.add(ADD_BUTTON);
+            
             this.addSessionPlaceHolder.add(this.buttonPanel);
         }
         
@@ -303,6 +310,33 @@ public class TutorThing {
             this.menu.add(this.exitItem);
 
         }
+        
+        private void makeClearField()
+        {
+            this.buttonPanel.add(this.CLEAR_BUTTON);
+            this.buttonPanel.add(this.ADD_BUTTON);
+            this.buttonPanel.add(this.EXPORT_BUTTON);
+            this.EXPORT_BUTTON.addActionListener(new ExportListener());
+            this.CLEAR_BUTTON.addActionListener(new ActionListener(){
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if(JOptionPane.showConfirmDialog(INSTANCE, "Are You Sure you want to clear the fields?", "Question?", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION)
+                    {
+                        INSTANCE.fName.setText("");
+                        INSTANCE.lName.setText("");
+                        INSTANCE.iD.setText("");
+                        INSTANCE.course.setText("");
+                        INSTANCE.instructor.setText("");
+                        INSTANCE.tutor.setText("");
+                        INSTANCE.comments.setText("");
+                    }
+                    
+                    
+                }
+            
+        });
+                    }
 
 
         /**
