@@ -46,7 +46,7 @@ public class TutorThing {
         
         private JTabbedPane tabbedPane = new JTabbedPane();
         
-        private final int SCROLL_PANE_OFFSET_WIDTH = 0, SCROLL_PANE_OFFSET_HEIGHT = 0;
+        private final int SCROLL_PANE_OFFSET_WIDTH = 0, SCROLL_PANE_OFFSET_HEIGHT = 500;
 
         private JPanel buttonPanel = new JPanel();
         private final int BUTTON_PANEL_OFFSET_WIDTH = 800, BUTTON_PANEL_OFFSET_HEIGHT = 200;
@@ -55,6 +55,10 @@ public class TutorThing {
         private JScrollPane sessionPane;
         private JScrollPane appointmentPane;
         
+        private JPanel sessionPlaceHolderPanel = new JPanel();
+        private JPanel sessionPanel =  new JPanel();
+        private JPanel addSessionPlaceHolder = new JPanel();
+        private JPanel appointmentPanel = new JPanel();
         
 
         //JLabels
@@ -153,7 +157,7 @@ public class TutorThing {
 
             buildPanels();
             this.makeMenuBar();
-            this.add(buttonPanel, BorderLayout.EAST);
+            //this.add(buttonPanel, BorderLayout.EAST);
 
             //Used to center the Window to the center of the screen no matter what computer you are using
             Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
@@ -170,28 +174,43 @@ public class TutorThing {
             //Scroll Pane            
             sessionPane = new JScrollPane(SESSION_TABLE);
             
-            this.add(this.tabbedPane);
-            this.tabbedPane.addTab("Sessions",this.sessionPane);
+            //this.add(this.tabbedPane);
+            this.setLayout(new GridLayout(2,1));
+            //this.tabbedPane.addTab("Sessions",this.sessionPane);
+            this.add(this.sessionPlaceHolderPanel);
+            this.sessionPlaceHolderPanel.setLayout(new GridLayout(1,2));
             this.sessionPane.setAutoscrolls(true);
-            this.sessionPane.setBounds(0, 0, this.getWidth() - SCROLL_PANE_OFFSET_WIDTH, this.getHeight() - SCROLL_PANE_OFFSET_HEIGHT);
-            this.sessionPane.setPreferredSize(new Dimension(this.getWidth() - SCROLL_PANE_OFFSET_WIDTH, this.getHeight() - SCROLL_PANE_OFFSET_HEIGHT));
+            //this.sessionPane.setBounds(0, 0, this.getWidth() - SCROLL_PANE_OFFSET_WIDTH, this.getHeight() - SCROLL_PANE_OFFSET_HEIGHT);
+            //this.sessionPane.setPreferredSize(new Dimension(this.getWidth() - SCROLL_PANE_OFFSET_WIDTH, this.getHeight() - SCROLL_PANE_OFFSET_HEIGHT));
+            this.sessionPane.setBounds(0, 0, this.getWidth() /2, this.getHeight() /2);
+            this.sessionPane.setPreferredSize(new Dimension(this.getWidth() /2, this.getHeight() /2));
             this.sessionPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
             this.sessionPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+            this.sessionPlaceHolderPanel.add(this.sessionPanel);
         }
 
         private void buildPanels() {
             this.buildJTable();
             this.makeButtonPanel();
+            this.add(this.addSessionPlaceHolder);
             this.makeAppointmentPanel();
+            this.sessionPanel.add(new JLabel("Current Sessions",JLabel.CENTER));
+            this.sessionPanel.add(this.sessionPane);
+            this.appointmentPanel.add(new JLabel("Appointments",JLabel.CENTER));
+            this.appointmentPanel.add(this.appointmentPane);
+            
+            
         }
         
         private void makeButtonPanel()
         {
             //Button Panel
-            this.buttonPanel.setPreferredSize(new Dimension(this.getWidth() - BUTTON_PANEL_OFFSET_WIDTH, this.getHeight()-this.BUTTON_PANEL_OFFSET_HEIGHT));
-            this.buttonPanel.setBounds(0, 0, this.getWidth() - BUTTON_PANEL_OFFSET_WIDTH, this.getHeight()- this.BUTTON_PANEL_OFFSET_HEIGHT);
+            //this.buttonPanel.setPreferredSize(new Dimension(this.getWidth() - BUTTON_PANEL_OFFSET_WIDTH, this.getHeight()-this.BUTTON_PANEL_OFFSET_HEIGHT));
+            //this.buttonPanel.setBounds(0, 0, this.getWidth() - BUTTON_PANEL_OFFSET_WIDTH, this.getHeight()- this.BUTTON_PANEL_OFFSET_HEIGHT);
+            
             this.buttonPanel.setLayout(new GridLayout(10, 2, 30, 10));
-
+            
+            
             this.buttonPanel.add(this.fLabel);
             this.fName.setColumns(COL_WIDTH);
             this.buttonPanel.add(this.fName);
@@ -224,18 +243,22 @@ public class TutorThing {
             this.EXPORT_BUTTON.addActionListener(new ExportListener());
             buttonPanel.add(ADD_BUTTON, BorderLayout.SOUTH);
             this.buttonPanel.add(this.EXPORT_BUTTON);
+            this.addSessionPlaceHolder.add(this.buttonPanel);
         }
         
         private void makeAppointmentPanel()
         {
             this.appointmentPane = new JScrollPane(this.APPOINTMENT_TABLE);
             
-            this.tabbedPane.addTab("Appointments",this.appointmentPane);
+            //this.tabbedPane.addTab("Appointments",this.appointmentPane);
             this.appointmentPane.setAutoscrolls(true);
-            this.appointmentPane.setBounds(0, 0, this.getWidth() - SCROLL_PANE_OFFSET_WIDTH, this.getHeight() - SCROLL_PANE_OFFSET_HEIGHT);
-            this.appointmentPane.setPreferredSize(new Dimension(this.getWidth() - SCROLL_PANE_OFFSET_WIDTH, this.getHeight() - SCROLL_PANE_OFFSET_HEIGHT));
+            //this.appointmentPane.setBounds(0, 0, this.getWidth() - SCROLL_PANE_OFFSET_WIDTH, this.getHeight() - SCROLL_PANE_OFFSET_HEIGHT);
+            //this.appointmentPane.setPreferredSize(new Dimension(this.getWidth() - SCROLL_PANE_OFFSET_WIDTH, this.getHeight() - SCROLL_PANE_OFFSET_HEIGHT));
+            this.appointmentPane.setBounds(0, 0, this.getWidth()/2, this.getHeight()/2);
+            this.appointmentPane.setPreferredSize(new Dimension(this.getWidth()/2, this.getHeight()/2));
             this.appointmentPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
             this.appointmentPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+            this.sessionPlaceHolderPanel.add(this.appointmentPanel);
         }
 
         private void makeMenuBar() {
