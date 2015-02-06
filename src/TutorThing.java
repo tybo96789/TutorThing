@@ -44,7 +44,8 @@ public class TutorThing {
         private Container listContainer = new Container();
         private Container buttonContainer = new Container();
         
-        private JTabbedPane tabbedPane = new JTabbedPane();
+        private JTabbedPane topRightSidePane = new JTabbedPane();
+        private JTabbedPane topLeftSidePane = new JTabbedPane();
         
         private final int SCROLL_PANE_OFFSET_WIDTH = 0, SCROLL_PANE_OFFSET_HEIGHT = 500;
 
@@ -97,7 +98,7 @@ public class TutorThing {
         private final ArrayList<JButton> REMOVE_BUTTON = new ArrayList();
         private final JButton EXPORT_BUTTON = new JButton("Export");
 
-        // JMenu (to be added) 
+        // JMenu
         private JMenu menu = new JMenu();
         private JMenuBar menuBar = new JMenuBar();
         private JMenuItem newItem;
@@ -105,6 +106,9 @@ public class TutorThing {
         private JMenuItem saveItem;
         private JMenuItem saveAsItem;
         private JMenuItem exitItem;
+        
+        private JMenu advance = new JMenu("Advance");
+        private JMenuItem killTimers;
 
         // JList (testing)
         //Application Stuff
@@ -116,9 +120,11 @@ public class TutorThing {
         private File file;
         private PrintStream out;
         private boolean isModifed = false;
-
+        
+        //JTable
         private final JTable SESSION_TABLE;
         private final JTable APPOINTMENT_TABLE;
+        private final int ROW_HEIGHT = 25;
         
         SessionTableModel sessionTableModel = new SessionTableModel();
         AppointmentTableModel appointmentTableModel = new AppointmentTableModel();
@@ -135,7 +141,9 @@ public class TutorThing {
             sessionTableModel.generateData();
             this.appointmentTableModel.generateData();
             SESSION_TABLE = new JTable(sessionTableModel);
+            this.SESSION_TABLE.setRowHeight(ROW_HEIGHT);
             this.APPOINTMENT_TABLE= new JTable(this.appointmentTableModel);
+            this.APPOINTMENT_TABLE.setRowHeight(ROW_HEIGHT);
 
             sessionButtonRenderer = SESSION_TABLE.getDefaultRenderer(JButton.class);
             sessionLabelRenderer = SESSION_TABLE.getDefaultRenderer(JLabel.class);
@@ -179,17 +187,18 @@ public class TutorThing {
             
             //this.add(this.tabbedPane);
             this.setLayout(new GridLayout(2,1));
-            //this.tabbedPane.addTab("Sessions",this.sessionPane);
+            this.topLeftSidePane.addTab("Sessions",this.sessionPane);
             this.add(this.sessionPlaceHolderPanel);
             this.sessionPlaceHolderPanel.setLayout(new GridLayout(1,2));
+            
             this.sessionPane.setAutoscrolls(true);
             //this.sessionPane.setBounds(0, 0, this.getWidth() - SCROLL_PANE_OFFSET_WIDTH, this.getHeight() - SCROLL_PANE_OFFSET_HEIGHT);
             //this.sessionPane.setPreferredSize(new Dimension(this.getWidth() - SCROLL_PANE_OFFSET_WIDTH, this.getHeight() - SCROLL_PANE_OFFSET_HEIGHT));
-            this.sessionPane.setBounds(0, 0, this.getWidth() /2, this.getHeight() /2);
-            this.sessionPane.setPreferredSize(new Dimension(this.getWidth() /2, this.getHeight() /2));
+            //this.sessionPane.setBounds(0, 0, this.getWidth() /2, this.getHeight() /2);
+            //this.sessionPane.setPreferredSize(new Dimension(this.getWidth() /2, this.getHeight() /2));
             this.sessionPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
             this.sessionPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-            this.sessionPlaceHolderPanel.add(this.sessionPanel);
+            this.sessionPlaceHolderPanel.add(this.topLeftSidePane);
         }
 
         private void buildPanels() {
@@ -197,12 +206,12 @@ public class TutorThing {
             this.makeButtonPanel();
             this.add(this.addSessionPlaceHolder);
             this.makeAppointmentPanel();
-            this.sessionPanel.add(new JLabel("Current Sessions",JLabel.CENTER));
-            this.sessionPanel.add(this.sessionPane);
+            //this.sessionPanel.add(new JLabel("Current Sessions",JLabel.CENTER));
+            //this.sessionPanel.add(this.topLeftSidePane);
             //this.appointmentPanel.add(new JLabel("Appointments",JLabel.CENTER));
-            this.appointmentPanel.add(this.tabbedPane);
-            this.tabbedPane.addTab("Appointments", this.appointmentPane);
-            this.tabbedPane.addTab("Completed Sessions", new JLabel("HI"));
+            //this.appointmentPanel.add(this.topRightSidePane);
+            this.topRightSidePane.addTab("Appointments", this.appointmentPane);
+            this.topRightSidePane.addTab("Completed Sessions", new JLabel("HI"));
             this.ADD_BUTTON.setForeground(Color.BLUE);
             this.makeClearField();
         }
@@ -257,15 +266,15 @@ public class TutorThing {
         {
             this.appointmentPane = new JScrollPane(this.APPOINTMENT_TABLE);
             
-            //this.tabbedPane.addTab("Appointments",this.appointmentPane);
+            this.topRightSidePane.addTab("Appointments",this.appointmentPane);
             this.appointmentPane.setAutoscrolls(true);
             //this.appointmentPane.setBounds(0, 0, this.getWidth() - SCROLL_PANE_OFFSET_WIDTH, this.getHeight() - SCROLL_PANE_OFFSET_HEIGHT);
             //this.appointmentPane.setPreferredSize(new Dimension(this.getWidth() - SCROLL_PANE_OFFSET_WIDTH, this.getHeight() - SCROLL_PANE_OFFSET_HEIGHT));
-            this.appointmentPane.setBounds(0, 0, this.getWidth()/2, this.getHeight()/2);
-            this.appointmentPane.setPreferredSize(new Dimension(this.getWidth()/2, this.getHeight()/2));
+            //this.appointmentPane.setBounds(0, 0, this.getWidth()/2, this.getHeight()/2);
+            //this.appointmentPane.setPreferredSize(new Dimension(this.getWidth()/2, this.getHeight()/2));
             this.appointmentPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
             this.appointmentPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-            this.sessionPlaceHolderPanel.add(this.appointmentPanel);
+            this.sessionPlaceHolderPanel.add(this.topRightSidePane);
         }
 
         private void makeMenuBar() {
@@ -274,6 +283,7 @@ public class TutorThing {
             this.menu = new JMenu("File");
             this.setJMenuBar(menuBar);
             this.menuBar.add(this.menu);
+            this.menuBar.add(this.advance);
 
             //Make MenuItems
             this.newItem = new JMenuItem("New");
@@ -281,6 +291,8 @@ public class TutorThing {
             this.saveItem = new JMenuItem("Export");
             this.saveAsItem = new JMenuItem("Export as");
             this.exitItem = new JMenuItem("Exit");
+            
+            this.killTimers = new JMenuItem("Kill All Timers");
 
             //Make MenuItems Accelerators
             this.newItem.setAccelerator(KeyStroke.getKeyStroke('N', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(), true));
@@ -301,6 +313,19 @@ public class TutorThing {
             this.saveItem.addActionListener(new ExportListener());
             this.saveAsItem.addActionListener(new ExportAsDocumentListener());
             this.exitItem.addActionListener(new ExitListener());
+            this.killTimers.addActionListener(new ActionListener(){
+
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                    if(JOptionPane.showConfirmDialog(INSTANCE,"This will stop all timers!\nAre you sure?", "Warning",JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION)
+                    {
+                        for(Timer t : INSTANCE.TIMERS)
+                        {
+                            t.stop();
+                        }
+                    }
+                }
+            });
 
             //Add to Menu
             this.menu.add(this.newItem);
@@ -308,6 +333,8 @@ public class TutorThing {
             this.menu.add(this.saveItem);
             this.menu.add(this.saveAsItem);
             this.menu.add(this.exitItem);
+            
+            this.advance.add(this.killTimers);
 
         }
         
