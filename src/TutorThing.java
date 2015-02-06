@@ -110,6 +110,7 @@ public class TutorThing {
         private JMenu advance = new JMenu("Advance");
         private JMenu debug = new JMenu("Debug");
         private JMenuItem killTimers;
+        private JMenuItem forceAdd;
 
         // JList (testing)
         //Application Stuff
@@ -296,6 +297,7 @@ public class TutorThing {
             this.exitItem = new JMenuItem("Exit");
             
             this.killTimers = new JMenuItem("Kill All Timers");
+            this.forceAdd = new JMenuItem("Force Add");
 
             //Make MenuItems Accelerators
             this.newItem.setAccelerator(KeyStroke.getKeyStroke('N', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(), true));
@@ -329,6 +331,48 @@ public class TutorThing {
                     }
                 }
             });
+            this.forceAdd.addActionListener(new ActionListener(){
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    JLabel timeLabel = new JLabel("00:00");
+                    JButton startButton = new JButton("Start");
+                    JButton stopButton = new JButton("Stop");
+                    int seconds = 0; 
+                    
+                    sessionTableModel.addData(INSTANCE.fName.getText().trim());
+                    sessionTableModel.addData(INSTANCE.lName.getText().trim());
+                    if(!INSTANCE.iD.getText().matches("@[0-9]{8}"))
+                        sessionTableModel.addData("@" + INSTANCE.iD.getText().trim());
+                    else
+                        sessionTableModel.addData(INSTANCE.iD.getText().trim());
+                    sessionTableModel.addData(INSTANCE.course.getText().trim());
+                    sessionTableModel.addData(INSTANCE.instructor.getText().trim());
+                    sessionTableModel.addData(INSTANCE.tutor.getText().trim());
+                    sessionTableModel.addData(timeLabel);
+                    sessionTableModel.addData(startButton);
+                    sessionTableModel.addData(stopButton);
+                    sessionTableModel.addData(INSTANCE.comments.getText().trim());
+                    stopButton.addActionListener(new stopButtonListener());
+                    Timer timer = new Timer(seconds, new TimerListener());
+
+                    // start time
+                    timer.setDelay(1000);
+                    timer.start();
+
+                    // store timer into TIMERS arraylist
+                    TIMERS.add(timer);
+
+                    // Reset TextFields
+                    INSTANCE.fName.setText("");
+                    INSTANCE.lName.setText("");
+                    INSTANCE.iD.setText("");
+                    INSTANCE.course.setText("");
+                    INSTANCE.instructor.setText("");
+                    INSTANCE.tutor.setText("");
+                    INSTANCE.comments.setText("");
+                }
+            });
 
             //Add to Menu
             this.menu.add(this.newItem);
@@ -338,6 +382,7 @@ public class TutorThing {
             this.menu.add(this.exitItem);
             
             this.debug.add(this.killTimers);
+            this.debug.add(this.forceAdd);
 
         }
         
