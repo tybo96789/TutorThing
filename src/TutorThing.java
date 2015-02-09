@@ -146,7 +146,7 @@ public class TutorThing {
             this.SESSION_TABLE.setRowHeight(ROW_HEIGHT);
             this.APPOINTMENT_TABLE= new JTable(this.appointmentTableModel);
             this.APPOINTMENT_TABLE.setRowHeight(ROW_HEIGHT);
-            this.SESSION_TABLE.setEditingColumn(1);
+            //this.SESSION_TABLE.setEditingColumn(1);
 
             sessionButtonRenderer = SESSION_TABLE.getDefaultRenderer(JButton.class);
             sessionLabelRenderer = SESSION_TABLE.getDefaultRenderer(JLabel.class);
@@ -352,7 +352,7 @@ public class TutorThing {
                     sessionTableModel.addData(timeLabel);
                     sessionTableModel.addData(startButton);
                     sessionTableModel.addData(stopButton);
-                    sessionTableModel.addData(INSTANCE.comments.getText().trim());
+                    //sessionTableModel.addData(INSTANCE.comments.getText().trim());
                     stopButton.addActionListener(new stopButtonListener());
                     Timer timer = new Timer(seconds, new TimerListener());
 
@@ -371,6 +371,7 @@ public class TutorThing {
                     INSTANCE.instructor.setText("");
                     INSTANCE.tutor.setText("");
                     INSTANCE.comments.setText("");
+                    INSTANCE.appointment.setSelected(false);
                 }
             });
 
@@ -405,6 +406,7 @@ public class TutorThing {
                         INSTANCE.instructor.setText("");
                         INSTANCE.tutor.setText("");
                         INSTANCE.comments.setText("");
+                        INSTANCE.appointment.setSelected(false);
                     }
                     
                     
@@ -443,12 +445,16 @@ public class TutorThing {
                 button = (JButton) value;
                 buttonEvent = (MouseEvent) SwingUtilities.convertMouseEvent(TABLE, e, button);
                 button.dispatchEvent(buttonEvent);
-
-                if (column == columnModel.getColumnCount() - 1) {
+                
+                System.out.println(column);
+                System.out.println(columnModel.getColumnCount()-1);
+                if (column == columnModel.getColumnCount()-1) {
+                    System.out.println("I hate this program");
                     TIMERS.get(row).stop();
                     INSTANCE.sessionListModel.get(row).setEndTime(System.currentTimeMillis());
 
                 } else {
+                    System.out.println("i really do hate this program");
                     TIMERS.get(row).start();
                 }
 
@@ -528,7 +534,7 @@ public class TutorThing {
                 columnNames.add("Elapsed Time");
                 columnNames.add("Start");
                 columnNames.add("Stop");
-                columnNames.add("Comments");
+                //columnNames.add("Comments");
                 /*
                  JLabel timeLabel = new JLabel("0");
                  int seconds = 0;                                        
@@ -652,7 +658,7 @@ public class TutorThing {
         private class TimerListener implements ActionListener {
 
             int colValue = 0;
-            final int row = sessionTableModel.getRowCount() - 1;
+            int row = sessionTableModel.getRowCount() - 1;
 
             private void getTimePanelPos() {
                 // local variable to avoid global changes                
@@ -743,6 +749,7 @@ public class TutorThing {
                     INSTANCE.instructor.setText("");
                     INSTANCE.tutor.setText("");
                     INSTANCE.comments.setText("");
+                    INSTANCE.appointment.setSelected(false);
                 }
             }
 
