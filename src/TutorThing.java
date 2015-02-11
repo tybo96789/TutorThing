@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 /**
  *
  * @author Tyler Atiburcio, Lawrence Ruffin
- * @version 1-ALPHA
+ * @version 1A-BETA
  */
 public class TutorThing {
 
@@ -761,7 +761,34 @@ public class TutorThing {
             
             public void removeRow(int row)
             {
-                this.sessionRow.remove(row);
+                for (Object o : this.sessionRow) {
+                    if(o instanceof JButton){
+                        JButton temp = (JButton) o;
+                        if(temp.getActionListeners().length !=0)
+                        {
+                            ActionListener[] lisTemp = temp.getActionListeners();
+                            stopButtonListener actLis = (stopButtonListener) lisTemp[lisTemp.length-1];
+                            actLis.updateRow(actLis.getRow()-(actLis.getRow()-row));
+                        }
+                    }
+                }
+                TIMERS.remove(row);
+                for(Timer t : TIMERS)
+                {
+                    ActionListener[] temp = t.getActionListeners();
+                    if(temp.length == 1)
+                    {
+                        TimerListener tl = (TimerListener) temp[0];
+                        System.out.println(tl.getRow());
+                        if(tl.getRow() >= row)
+                            tl.updateRow(tl.getRow()-1);
+                    }
+                }
+                for (int i = 0; i < this.columnNames.size(); i++) {
+                    this.sessionRow.remove(row);
+                }
+                
+                
                 this.fireTableRowsDeleted(row, row);
                 this.fireTableDataChanged();
             }
@@ -850,6 +877,16 @@ public class TutorThing {
                         return;
                     }
                 }
+            }
+            
+            public void updateRow(int r)
+            {
+                this.row = r;
+            }
+            
+            public int getRow()
+            {
+                return this.row;
             }
 
             @Override
@@ -989,6 +1026,15 @@ public class TutorThing {
                         return;
                     }
                 }
+            }
+            public void updateRow(int r)
+            {
+                this.row = r;
+            }
+            
+            public int getRow()
+            {
+                return this.row;
             }
 
             @Override
