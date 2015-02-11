@@ -72,7 +72,7 @@ public class TutorThing {
         private JLabel startTime = new JLabel("Start Time");
         private JLabel commentsLable = new JLabel("Comments");
         private JLabel appointmentLable = new JLabel("Appointment?");
-        private JLabel auxLabel = new JLabel("Aux Info");
+        private JLabel sessionLenLabel = new JLabel("Session Length (min)");
 
         //JTextFields
         private final int COL_WIDTH = 30;
@@ -83,6 +83,7 @@ public class TutorThing {
         private JTextField instructor = new JTextField();
         private JTextField tutor = new JTextField();
         private JTextField comments = new JTextField();
+        private JTextField sessionLength = new JTextField();
         
         //JCheckBox
         private JCheckBox appointment = new JCheckBox();
@@ -93,9 +94,9 @@ public class TutorThing {
 
         // Buttons
         private final JButton ADD_BUTTON = new JButton("Add");
-        //private final JButton REMOVE_BUTTON = new JButton("REMOVE");
+        private final JButton REMOVE_BUTTON = new JButton("Remove Selected Row");
         private final JButton CLEAR_BUTTON = new JButton("Clear Fields");
-        private final ArrayList<JButton> REMOVE_BUTTON = new ArrayList();
+        //private final ArrayList<JButton> REMOVE_BUTTON = new ArrayList();
         private final JButton EXPORT_BUTTON = new JButton("Export");
 
         // JMenu
@@ -139,6 +140,7 @@ public class TutorThing {
             // draws components onto the table
             TableCellRenderer sessionButtonRenderer;
             TableCellRenderer sessionLabelRenderer;
+            TableCellRenderer appointmentButtonRenderer;
 
             sessionTableModel.generateData();
             this.appointmentTableModel.generateData();
@@ -146,19 +148,23 @@ public class TutorThing {
             this.SESSION_TABLE.setRowHeight(ROW_HEIGHT);
             this.APPOINTMENT_TABLE= new JTable(this.appointmentTableModel);
             this.APPOINTMENT_TABLE.setRowHeight(ROW_HEIGHT);
-            //this.SESSION_TABLE.setEditingColumn(1);
+            this.SESSION_TABLE.setEditingColumn(1);
 
             sessionButtonRenderer = SESSION_TABLE.getDefaultRenderer(JButton.class);
             sessionLabelRenderer = SESSION_TABLE.getDefaultRenderer(JLabel.class);
+            appointmentButtonRenderer = this.APPOINTMENT_TABLE.getDefaultRenderer(JButton.class);
 
             SESSION_TABLE.setDefaultRenderer(JButton.class,
                     new ComponentRenderer(sessionButtonRenderer));
             SESSION_TABLE.setDefaultRenderer(JLabel.class,
                     new ComponentRenderer(sessionLabelRenderer));
+            
+            this.APPOINTMENT_TABLE.setDefaultRenderer(JButton.class, appointmentButtonRenderer);
 
             // Adjusts SESSION_TABLE
             //SESSION_TABLE.setPreferredScrollableViewportSize(new Dimension(400, 200));
             SESSION_TABLE.addMouseListener(new SessionTableMouseListener(SESSION_TABLE));
+            this.APPOINTMENT_TABLE.addMouseListener(new AppointmentTableMouseListener(this.APPOINTMENT_TABLE));
 
             //Frame stuff
             this.setTitle(TITLE);
@@ -191,7 +197,7 @@ public class TutorThing {
             //this.add(this.tabbedPane);
             this.setLayout(new GridLayout(2,1));
             this.topLeftSidePane.addTab("Sessions",this.sessionPane);
-            this.add(this.sessionPlaceHolderPanel);
+            //this.add(this.sessionPlaceHolderPanel);
             this.sessionPlaceHolderPanel.setLayout(new GridLayout(1,2));
             
             this.sessionPane.setAutoscrolls(true);
@@ -201,7 +207,10 @@ public class TutorThing {
             //this.sessionPane.setPreferredSize(new Dimension(this.getWidth() /2, this.getHeight() /2));
             this.sessionPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
             this.sessionPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-            this.sessionPlaceHolderPanel.add(this.topLeftSidePane);
+            
+            //Removed Appointment table
+            //this.sessionPlaceHolderPanel.add(this.topLeftSidePane);
+            this.add(this.topLeftSidePane);
         }
 
         private void buildPanels() {
@@ -255,12 +264,17 @@ public class TutorThing {
             this.buttonPanel.add(this.commentsLable);
             this.comments.setColumns(COL_WIDTH);
             this.buttonPanel.add(this.comments);
-            
-            this.buttonPanel.add(this.appointmentLable);
-            this.buttonPanel.add(this.appointment);
+            //Removed for appointment tabel
+            //this.buttonPanel.add(this.appointmentLable);
+            //this.buttonPanel.add(this.appointment);
+            this.buttonPanel.add(this.sessionLenLabel);
+            this.sessionLength.setColumns(COL_WIDTH);
+            this.sessionLength.setText("30");
+            this.buttonPanel.add(this.sessionLength);
 
             this.ADD_BUTTON.addActionListener(new AddButtonListener());
             //buttonPanel.add(ADD_BUTTON);
+            
             
             this.addSessionPlaceHolder.add(this.buttonPanel);
         }
@@ -352,9 +366,9 @@ public class TutorThing {
                     sessionTableModel.addData(timeLabel);
                     sessionTableModel.addData(startButton);
                     sessionTableModel.addData(stopButton);
-                    //sessionTableModel.addData(INSTANCE.comments.getText().trim());
+                    sessionTableModel.addData(INSTANCE.comments.getText().trim());
                     stopButton.addActionListener(new stopButtonListener());
-                    Timer timer = new Timer(seconds, new TimerListener());
+                    Timer timer = new Timer(seconds, new TimerListener(INSTANCE.tutor.getText().trim(),Integer.parseInt(INSTANCE.sessionLength.getText().trim())));
 
                     // start time
                     timer.setDelay(1000);
@@ -371,7 +385,7 @@ public class TutorThing {
                     INSTANCE.instructor.setText("");
                     INSTANCE.tutor.setText("");
                     INSTANCE.comments.setText("");
-                    INSTANCE.appointment.setSelected(false);
+                    INSTANCE.sessionLength.setText("30");
                 }
             });
 
@@ -390,6 +404,7 @@ public class TutorThing {
         private void makeClearField()
         {
             this.buttonPanel.add(this.CLEAR_BUTTON);
+            this.CLEAR_BUTTON.setForeground(Color.red);
             this.buttonPanel.add(this.ADD_BUTTON);
             this.buttonPanel.add(this.EXPORT_BUTTON);
             this.EXPORT_BUTTON.addActionListener(new ExportListener());
@@ -397,7 +412,7 @@ public class TutorThing {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    if(JOptionPane.showConfirmDialog(INSTANCE, "Are You Sure you want to clear the fields?", "Question?", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION)
+                    if(JOptionPane.showConfirmDialog(INSTANCE, "Are You Sure you want to clear the fields?", "Question?", JOptionPane.YES_NO_OPTION) == JOptionPane.OK_OPTION)
                     {
                         INSTANCE.fName.setText("");
                         INSTANCE.lName.setText("");
@@ -406,13 +421,33 @@ public class TutorThing {
                         INSTANCE.instructor.setText("");
                         INSTANCE.tutor.setText("");
                         INSTANCE.comments.setText("");
-                        INSTANCE.appointment.setSelected(false);
+                        INSTANCE.sessionLength.setText("30");
                     }
                     
                     
                 }
             
         });
+            this.buttonPanel.add(this.REMOVE_BUTTON);
+            this.REMOVE_BUTTON.setForeground(Color.red);
+            this.REMOVE_BUTTON.addActionListener(new ActionListener(){
+
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                    final int sel = INSTANCE.SESSION_TABLE.getSelectedRow();
+                    switch(JOptionPane.showConfirmDialog(INSTANCE, "Are you sure to delete row " + sel + ", with the client name\n" + INSTANCE.sessionTableModel.getValueAt(sel, 0) +"?"))
+                    {
+                        case JOptionPane.YES_OPTION:
+                        {
+                            
+                            TIMERS.get(sel).stop();
+                            INSTANCE.sessionTableModel.removeRow(sel);
+                            
+                        }
+                    }
+                    
+                }
+            });
                     }
 
 
@@ -423,6 +458,7 @@ public class TutorThing {
         class SessionTableMouseListener implements MouseListener {
 
             private final JTable TABLE;
+            final int STOP_BUTTON_COL = 8;
 
             private void forwardEventToButton(MouseEvent e) {
                 TableColumnModel columnModel = TABLE.getColumnModel();
@@ -445,16 +481,12 @@ public class TutorThing {
                 button = (JButton) value;
                 buttonEvent = (MouseEvent) SwingUtilities.convertMouseEvent(TABLE, e, button);
                 button.dispatchEvent(buttonEvent);
-                
-                System.out.println(column);
-                System.out.println(columnModel.getColumnCount()-1);
-                if (column == columnModel.getColumnCount()-1) {
-                    System.out.println("I hate this program");
+
+                if (column == STOP_BUTTON_COL) {
                     TIMERS.get(row).stop();
                     INSTANCE.sessionListModel.get(row).setEndTime(System.currentTimeMillis());
 
                 } else {
-                    System.out.println("i really do hate this program");
                     TIMERS.get(row).start();
                 }
 
@@ -468,6 +500,135 @@ public class TutorThing {
             }
 
             public SessionTableMouseListener(JTable table) {
+                this.TABLE = table;
+            }
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                this.forwardEventToButton(e);
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                //this.forwardEventToButton(e);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                //this.forwardEventToButton(e);
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                this.forwardEventToButton(e);
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                this.forwardEventToButton(e);
+            }
+        }
+        
+        class AppointmentTableMouseListener implements MouseListener {
+
+            private final JTable TABLE;
+            final int STOP_BUTTON_COL = 8;
+
+            private void forwardEventToButton(MouseEvent e) {
+                TableColumnModel columnModel = TABLE.getColumnModel();
+                int column = columnModel.getColumnIndexAtX(e.getX());
+                int row = e.getY() / TABLE.getRowHeight();
+                Object value;
+                JButton button;
+                MouseEvent buttonEvent;
+
+                if (row >= TABLE.getRowCount() || row < 0 || column >= TABLE.getColumnCount() || column < 0) {
+                    return;
+                }
+
+                value = TABLE.getValueAt(row, column);
+
+                if (!(value instanceof JButton)) {
+                    return;
+                }
+
+                button = (JButton) value;
+                buttonEvent = (MouseEvent) SwingUtilities.convertMouseEvent(TABLE, e, button);
+                button.dispatchEvent(buttonEvent);
+                for (int i = 0; i < INSTANCE.APPOINTMENT_TABLE.getColumnCount(); i++) {
+                    if(i==5)
+                    {
+                        sessionTableModel.addData(new JLabel("00:00"));
+
+                    }
+                    else if(i == 6)
+                    {
+                        sessionTableModel.addData(new JButton("Start"));
+                    }
+                    else if(i == 7)
+                    {
+                        JButton stopButton = new JButton("Stop");
+                        sessionTableModel.addData(stopButton);
+                        stopButton.addActionListener(new stopButtonListener());
+                    }
+                    else
+                        INSTANCE.sessionTableModel.addData(INSTANCE.appointmentTableModel.getValueAt(row, i));
+                }
+                
+                INSTANCE.sessionListModel.addElement(new Session(System.currentTimeMillis(),
+                     INSTANCE.fName.getText().trim(),
+                     INSTANCE.lName.getText().trim(),
+                     INSTANCE.iD.getText().trim(),
+                     INSTANCE.course.getText().trim(),
+                     INSTANCE.instructor.getText().trim(),
+                     INSTANCE.tutor.getText().trim(),
+                     INSTANCE.comments.getText().trim()));
+                
+                    int seconds = 0;
+
+                    Timer timer = new Timer(seconds, new TimerListener(INSTANCE.tutor.getText().trim(),Integer.parseInt(INSTANCE.sessionLength.getText().trim())));
+
+                    // start time
+                    timer.setDelay(1000);
+                    timer.start();
+
+                    // store timer into TIMERS arraylist
+                    TIMERS.add(timer);
+                    
+                    INSTANCE.appointmentTableModel.fireTableRowsDeleted(row, row);
+                /*
+                columnNames.add("First Name");
+                columnNames.add("Last Name");
+                columnNames.add("ID");
+                columnNames.add("Course");
+                columnNames.add("Instructor");
+                columnNames.add("Tutor");
+                columnNames.add("Appointment Time");
+                columnNames.add("Start");
+                columnNames.add("Comments");
+                
+                columnNames.add("First Name");
+                columnNames.add("Last Name");
+                columnNames.add("ID");
+                columnNames.add("Course");
+                columnNames.add("Instructor");
+                columnNames.add("Tutor");
+                columnNames.add("Elapsed Time");
+                columnNames.add("Start");
+                columnNames.add("Stop");
+                columnNames.add("Comments");
+                */
+
+
+                /* 
+                 This is necessary so that when a button is pressed and released
+                 it gets rendered properly.  Otherwise, the button may still appear
+                 pressed down when it has been released.
+                 */
+                TABLE.repaint();
+            }
+
+            public AppointmentTableMouseListener(JTable table) {
                 this.TABLE = table;
             }
 
@@ -519,7 +680,7 @@ public class TutorThing {
             }
         } // end JTableButtonRenderer
 
-        class SessionTableModel extends AbstractTableModel {
+        class SessionTableModel extends AbstractTableModel  {
 
             protected Vector sessionRow = new Vector();
             protected Vector columnNames = new Vector();
@@ -534,7 +695,7 @@ public class TutorThing {
                 columnNames.add("Elapsed Time");
                 columnNames.add("Start");
                 columnNames.add("Stop");
-                //columnNames.add("Comments");
+                columnNames.add("Comments");
                 /*
                  JLabel timeLabel = new JLabel("0");
                  int seconds = 0;                                        
@@ -597,6 +758,13 @@ public class TutorThing {
             public Class getColumnClass(int column) {
                 return getValueAt(0, column).getClass();
             }
+            
+            public void removeRow(int row)
+            {
+                this.sessionRow.remove(row);
+                this.fireTableRowsDeleted(row, row);
+                this.fireTableDataChanged();
+            }
         }
         
         class AppointmentTableModel extends AbstractTableModel {
@@ -630,7 +798,8 @@ public class TutorThing {
 
             @Override
             public int getRowCount() {
-                return sessionRow.size() / columnNames.size();
+                //return sessionRow.size() / columnNames.size();
+                return sessionRow.size();
             }
 
             @Override
@@ -641,7 +810,8 @@ public class TutorThing {
             @Override
             public Object getValueAt(int row, int column) {
 
-                return sessionRow.get((row * getColumnCount()) + column);
+                //return sessionRow.get((row * getColumnCount()) + column);
+                return sessionRow.get(row * column);
             }
 
             @Override
@@ -658,7 +828,19 @@ public class TutorThing {
         private class TimerListener implements ActionListener {
 
             int colValue = 0;
-            int row = sessionTableModel.getRowCount() - 1;
+            int row = sessionTableModel.getRowCount()-1;
+            final String tutor;
+            final int sessionLength;
+            final String client;
+            boolean moreSessions = false;
+            
+            public TimerListener(String s, int time)
+            {
+                super();
+                this.tutor = s;
+                this.sessionLength = (time*60)-5;
+                this.client = (String) sessionTableModel.getValueAt(row, 0);
+            }
 
             private void getTimePanelPos() {
                 // local variable to avoid global changes                
@@ -676,7 +858,18 @@ public class TutorThing {
                 JLabel timeLabel = (JLabel) sessionTableModel.getValueAt(row, colValue);
                 String formattedTime = timeLabel.getText();
                 String[] timeArray = formattedTime.split(":");
-                int time = Integer.parseInt(timeArray[0])*60 + Integer.parseInt(timeArray[1]);                
+                int time = Integer.parseInt(timeArray[0])*60 + Integer.parseInt(timeArray[1]);
+                if(time == this.sessionLength || (time%1795== 0 && this.moreSessions))
+                {
+                    switch(JOptionPane.showConfirmDialog(INSTANCE,"Remind,\n" +this.tutor+ " with "+ this.client +"\nHas 5 Minutes left in the Session\nAdditional Session?"  , "5 Minute Warning", JOptionPane.YES_NO_OPTION))
+                    {
+                        case JOptionPane.YES_OPTION:
+                            this.moreSessions = true; break;
+                        default:
+                            this.moreSessions = false;
+                            break;
+                    }
+                }
                 timeLabel.setText(SDF.format((time+1)*1000));
                 repaint();
                 //System.out.println("time: + " + time );
@@ -693,10 +886,36 @@ public class TutorThing {
                         || INSTANCE.iD.getText().isEmpty()
                         || INSTANCE.course.getText().isEmpty()
                         || INSTANCE.instructor.getText().isEmpty()
-                        || INSTANCE.tutor.getText().isEmpty()) {
+                        || INSTANCE.tutor.getText().isEmpty()
+                        || INSTANCE.sessionLength.getText().isEmpty())
+                {
                     JOptionPane.showMessageDialog(null, "A Field is Missing Information", "Error", JOptionPane.ERROR_MESSAGE);
-                } else if(!INSTANCE.iD.getText().matches("@?[0-9]{8}")) JOptionPane.showMessageDialog(null, "ID is invalid", "Error", JOptionPane.ERROR_MESSAGE);
+                } else if(!INSTANCE.iD.getText().matches("@?[0-9]{8}")) JOptionPane.showMessageDialog(INSTANCE, "ID is invalid", "Error", JOptionPane.ERROR_MESSAGE);
+                else if(!INSTANCE.sessionLength.getText().matches("[0-9]+")) JOptionPane.showMessageDialog(INSTANCE, "Session Length Invalid", "Error", JOptionPane.ERROR_MESSAGE);
                 else {
+                    
+                    if(INSTANCE.appointment.isSelected())
+                    {
+                    JButton startButton = new JButton("Start");
+                        
+                    // System.out.println("outer from: " + e.getSource()); // debugging aid
+                    appointmentTableModel.addData(INSTANCE.fName.getText().trim());
+                    appointmentTableModel.addData(INSTANCE.lName.getText().trim());
+                    if(!INSTANCE.iD.getText().matches("@[0-9]{8}"))
+                        appointmentTableModel.addData("@" + INSTANCE.iD.getText().trim());
+                    else
+                        appointmentTableModel.addData(INSTANCE.iD.getText().trim());
+                    appointmentTableModel.addData(INSTANCE.course.getText().trim());
+                    appointmentTableModel.addData(INSTANCE.instructor.getText().trim());
+                    appointmentTableModel.addData(INSTANCE.tutor.getText().trim());
+                    appointmentTableModel.addData(startButton);
+                    appointmentTableModel.addData(INSTANCE.comments.getText().trim());
+                    //System.out.println("listener " + sessionTableModel.sessionRow); // debugging aid
+                    
+
+                    
+                    }
+                    else {
                     JLabel timeLabel = new JLabel("00:00");
                     JButton startButton = new JButton("Start");
                     JButton stopButton = new JButton("Stop");
@@ -716,7 +935,6 @@ public class TutorThing {
                     sessionTableModel.addData(startButton);
                     sessionTableModel.addData(stopButton);
                     sessionTableModel.addData(INSTANCE.comments.getText().trim());
-                    JButton b = new JButton();
                     stopButton.addActionListener(new stopButtonListener());
                     //System.out.println("listener " + sessionTableModel.sessionRow); // debugging aid
                     
@@ -732,7 +950,7 @@ public class TutorThing {
                      INSTANCE.comments.getText().trim()));
 
                     
-                    Timer timer = new Timer(seconds, new TimerListener());
+                    Timer timer = new Timer(seconds, new TimerListener(INSTANCE.tutor.getText().trim(),Integer.parseInt(INSTANCE.sessionLength.getText().trim())));
 
                     // start time
                     timer.setDelay(1000);
@@ -741,6 +959,8 @@ public class TutorThing {
                     // store timer into TIMERS arraylist
                     TIMERS.add(timer);
 
+                    
+                    }
                     // Reset TextFields
                     INSTANCE.fName.setText("");
                     INSTANCE.lName.setText("");
@@ -749,7 +969,8 @@ public class TutorThing {
                     INSTANCE.instructor.setText("");
                     INSTANCE.tutor.setText("");
                     INSTANCE.comments.setText("");
-                    INSTANCE.appointment.setSelected(false);
+                    INSTANCE.sessionLength.setText("30");
+                    
                 }
             }
 
@@ -757,8 +978,8 @@ public class TutorThing {
 
         private class stopButtonListener implements ActionListener {
 
-            int colValue = 0;
-            final int row = sessionTableModel.getRowCount() - 1;
+            int colValue = 9;
+            int row = sessionTableModel.getRowCount() - 1;
 
             private void getStopPos() {
                 // local variable to avoid global changes                
