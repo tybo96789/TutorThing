@@ -204,7 +204,7 @@ public class TutorThing {
             //this.sessionPane.setBounds(0, 0, this.getWidth() - SCROLL_PANE_OFFSET_WIDTH, this.getHeight() - SCROLL_PANE_OFFSET_HEIGHT);
             //this.sessionPane.setPreferredSize(new Dimension(this.getWidth() - SCROLL_PANE_OFFSET_WIDTH, this.getHeight() - SCROLL_PANE_OFFSET_HEIGHT));
             //this.sessionPane.setBounds(0, 0, this.getWidth() /2, this.getHeight() /2);
-            //this.sessionPane.setPreferredSize(new Dimension(this.getWidth() /2, this.getHeight() /2));
+            //this.sessionPane.setPreferredS;ize(new Dimension(this.getWidth() /2, this.getHeight() /2));
             this.sessionPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
             this.sessionPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
             
@@ -1090,7 +1090,7 @@ public class TutorThing {
                 out.flush();
                 out.close();
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, ex.getMessage(), "Error Opening File", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "Error Saving File", JOptionPane.ERROR_MESSAGE);
             }
         }
 
@@ -1319,6 +1319,6 @@ class Session {
     public String toString() {
         DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-        return dateFormat.format(new Date(this.start)) + "," + this.lName + "," + this.fName + "," + this.iD + "," + this.course + "," + this.instructor + "," + this.tutor + "," + timeFormat.format(new Date(this.start)) + "," + timeFormat.format(new Date(this.end) + ","+ this.comments) ;
+        return dateFormat.format(new Date(this.start)) + "," + this.lName + "," + this.fName + "," + this.iD + "," + this.course + "," + this.instructor + "," + this.tutor + "," + timeFormat.format(new Date(this.start)) + "," + timeFormat.format(new Date(this.end)) + ","+ this.comments ;
     }
 }
